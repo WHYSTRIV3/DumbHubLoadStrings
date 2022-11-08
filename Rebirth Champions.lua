@@ -3,6 +3,7 @@ local ui = library:CreateWindow("Rebirth Champions")
 
 local Main = ui:new("Main")
 local Egg = ui:new("Eggs")
+local Potions = ui:new("Potions")
 local Teleport = ui:new("Teleport")
 local Misc = ui:new("Misc")
 
@@ -17,8 +18,20 @@ local SelectedTeleportTo;
 local Codes = {"Release", "Alien", "500Likes", "3kLikes", "BeastPet349", "BeastPet491", "BeastPet550"}
 local modulescrpt;
 local SelectedCraftAll = "CraftAll"
-local RebirthTable = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}
+local RebirthTable = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16","17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75"}
 local SelectedRibirth;
+
+
+
+
+
+
+
+
+
+
+
+
 -- Anti Afk
 Player.Idled:Connect(function()
     VU:Button2Down(Vector2.new(0, 0), WS.CurrentCamera.CFrame)
@@ -90,7 +103,27 @@ end)
 
 
 
+-- Eggs
+Egg:CreateDropdown("Select Egg",getEggs(), function(Eggs)
+    SelectedEggs = Eggs
+end)
 
+Egg:CreateToggle("Auto Egg", true, function()
+    if SelectedEggs then
+        RS.Functions.Unbox:InvokeServer(SelectedEggs,'Single')
+    end
+end)
+
+Egg:CreateToggle("Auto Triple Egg", true, function()
+    if SelectedEggs then
+        RS.Functions.Unbox:InvokeServer(SelectedEggs,'Triple')
+    end
+end)
+
+Egg:CreateToggle("Auto Craft All", true, function()
+    local Selected = {}
+    RS.Functions.Request:InvokeServer(SelectedCraftAll,Selected)
+end)
 
 
 
@@ -115,27 +148,49 @@ end)
 
 
 
--- Eggs
-Egg:CreateDropdown("Select Egg",getEggs(), function(Eggs)
-    SelectedEggs = Eggs
+
+--Potions
+
+Potions:CreateToggle("Auto Buy x2Clicks", true, function()
+    local ohString1 = "x2Clicks"
+    local ohNumber2 = 100
+    game:GetService("ReplicatedStorage").Events.Potion:FireServer(ohString1, ohNumber2)
 end)
 
-Egg:CreateToggle("Auto Egg", true, function()
-    if SelectedEggs then
-        RS.Functions.Unbox:InvokeServer(SelectedEggs,'Single')
-    end
+Potions:CreateToggle("Auto Buy x2Gems", true, function()
+    local ohString1 = "x2Gems"
+    local ohNumber2 = 100
+    game:GetService("ReplicatedStorage").Events.Potion:FireServer(ohString1, ohNumber2)
 end)
 
-Egg:CreateToggle("Auto Triple Egg", true, function()
-    if SelectedEggs then
-        RS.Functions.Unbox:InvokeServer(SelectedEggs,'Triple')
-    end
+
+Potions:CreateToggle("Auto Buy x2Luck", true, function()
+    local ohString1 = "x2Luck"
+    local ohNumber2 = 100
+    game:GetService("ReplicatedStorage").Events.Potion:FireServer(ohString1, ohNumber2)
 end)
 
-Egg:CreateToggle("Auto Craft All", true, function()
-    local Selected = {}
-    RS.Functions.Request:InvokeServer(SelectedCraftAll,Selected)
+
+Potions:CreateToggle("Auto Buy x2Rebirths", true, function()
+    local ohString1 = "x2Rebirths"
+    local ohNumber2 = 100
+    game:GetService("ReplicatedStorage").Events.Potion:FireServer(ohString1, ohNumber2)
 end)
+
+
+Potions:CreateToggle("Auto Buy x2PetXP", true, function()
+    local ohString1 = "x2PetXP"
+    local ohNumber2 = 100
+    game:GetService("ReplicatedStorage").Events.Potion:FireServer(ohString1, ohNumber2)
+end)
+
+
+Potions:CreateToggle("Auto Buy x2Clicks", true, function()
+    local ohString1 = "x2HatchSpeed"
+    local ohNumber2 = 100
+    game:GetService("ReplicatedStorage").Events.Potion:FireServer(ohString1, ohNumber2)
+end)
+
 
 
 

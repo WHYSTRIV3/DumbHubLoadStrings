@@ -146,9 +146,9 @@ local library = loadstring(game:HttpGet("https://gitlab.com/Ner0ox/versus/-/raw/
         end
     end)
     
-    Egg:CreateToggle("Auto Egg", true, function()
+    Egg:CreateToggle("Auto Triple Egg", true, function()
         if selectedEgg then
-            RS.Remotes.HatchEgg:FireServer(selectedEgg)
+            RS.Remotes.HatchEgg:FireServer(selectedEgg,true)
         end
     end)
     

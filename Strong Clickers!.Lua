@@ -259,7 +259,7 @@ local library = loadstring(game:HttpGet("https://gitlab.com/Ner0ox/versus/-/raw/
     end)
     
     Misc:CreateButton("Copy Discord Invite", function()
-        setclipboard("https://discord.gg/8zzP4fXNFz")
+        setclipboard("https://discord.gg/ups8GeuYAD")
     end)
     
     local TeleportService = game:GetService("TeleportService")

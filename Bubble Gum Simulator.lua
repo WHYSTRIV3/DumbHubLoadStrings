@@ -254,7 +254,7 @@ Misc:CreateSlider("WalkSpeed", {min = 16, max = 200, default = 16}, function(sta
 end)
 
 Misc:CreateButton("Copy Discord Invite", function()
-    setclipboard("https://discord.gg/8zzP4fXNFz")
+    setclipboard("https://discord.gg/ups8GeuYAD")
 end)
 
 local TeleportService = game:GetService("TeleportService")

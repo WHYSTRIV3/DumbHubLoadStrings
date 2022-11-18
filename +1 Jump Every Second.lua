@@ -1,5 +1,5 @@
 local library = loadstring(game:HttpGet("https://gitlab.com/Ner0ox/versus/-/raw/main/ui/UIV2.lua", true))()
-local ui = library:CreateWindow("Anime Evolution Simulator")
+local ui = library:CreateWindow("+1 Jump Every Second")
 
 local Main = ui:new("Main")
 local Misc = ui:new("Misc")

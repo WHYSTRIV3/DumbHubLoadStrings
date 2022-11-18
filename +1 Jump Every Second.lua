@@ -2,8 +2,6 @@ local library = loadstring(game:HttpGet("https://gitlab.com/Ner0ox/versus/-/raw/
 local ui = library:CreateWindow("Anime Evolution Simulator")
 
 local Main = ui:new("Main")
-local Egg = ui:new("Eggs")
-local Teleport = ui:new("Teleport")
 local Misc = ui:new("Misc")
 
 local VU = game:GetService("VirtualUser")

@@ -22,7 +22,7 @@ local SelectedIslands;
 local Codes = {"Release", "Alien", "500Likes", "3kLikes", "BeastPet349", "BeastPet491", "BeastPet550"}
 local modulescrpt;
 local SelectedCraftAll = "CraftAll"
-local RebirthTable = {"1", "5", "10", "20", "100", "500", "4000", "13500", "32000", "62500", "108000", "171500", "256000", "364000", "500000", "1000000", "2000000", "1000000000"}
+local RebirthTable = {"1", "5", "10", "20", "100", "500", "4000", "13500", "32000", "62500", "108000", "171500", "256000", "364000", "500000", "1000000", "2000000", "100000000000"}
 local SelectedRibirth;
 local Teleports = {
     ["Forest"] = CFrame.new(-165, 977, -441),

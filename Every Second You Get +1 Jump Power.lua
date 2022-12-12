@@ -26,7 +26,7 @@ local Teleports = {
 --Variables
 local SelectedEggs;
 local SelectedRebirth;
-local SelectedSpawns;
+local SelectedWins;
 local KANdistance = 400000000000000000000000000000;
 local TeleportWait = false
 
@@ -54,11 +54,29 @@ function getEggs()
     return Eggs
 end
 
-
+function getWins()
+    local Wins = {}
+    for _,v in pairs(WS.Wins:GetChildren()) do 
+        table.insert(Wins, v.Name)
+    end
+    return Wins
+end
 
 
 --Main
 
+
+Main:CreateDropdown("Select Win", getWins(), function(Wins)
+	SelectedWins = Wins
+	print(SelectedWins)
+end)
+
+Main:CreateToggle("Auto Selected Trophy", true, function()
+if SelectedWins then
+	local TeleportCFrame = WS.Wins[SelectedWins].CFrame
+	Player.Character.HumanoidRootPart.CFrame = TeleportCFrame
+	end
+end)
 
 
 
@@ -67,17 +85,21 @@ Main:CreateToggle("Auto Trophies", true, function()
         TeleportWait = true
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1, 1868.94995, 130, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
 		task.wait(1)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2049, 6205.05029, 131, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-230.500015, 2533.1438, -12.5000038, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
         task.wait(1)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(4049, 8734.84961, 141, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(380.439178, 8979.04688, -44.4125099, 0, 0, 1, -1, 0, 0, 0, -1, 0) * CFrame.new(0,0,0)
 		task.wait(1)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(6049, 13429.8496, 152, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2049, 6205.05029, 146, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
 		task.wait(1)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(8049, 19189.8516, 161, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(4049, 8734.84961, 152, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
 		task.wait(1)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(10266, 27323.252, 173, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(6049, 13429.8496, 162, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
 		task.wait(1)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(12314, 45653.2539, 199, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(8049, 19189.8516, 171, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		task.wait(1)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(10266, 27323.252, 185, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
+		task.wait(1)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(12314, 45653.2539, 212, 0, 0, -1, -1, 0, 0, 0, 1, 0) * CFrame.new(0,0,0)
 		task.wait(1)
 		TeleportWait = false
 	end

@@ -19,7 +19,6 @@ local RebirthTable = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "
 local Potions = {"x2Clicks", "x2Gems", "x2Luck", "x2Rebirths", "x2PetXP", "x2HatchSpeed"}
 local Pass = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}
 local CUPgrades = {"ClickMultiplier", "HatchSpeed", "BankSlots", "PetEquip", "GiftMultiplier", "LuckMultiplier"}
-
 --Variables
 local SelectedRibirth;
 local SelectedCraftAll = "CraftAll"
@@ -87,17 +86,6 @@ Event:CreateToggle("Auto Christmas Upgrades", true, function()
         RS.Functions.Upgrade:InvokeServer(v, "christmas")
     end
 end)
-
-Event:CreateToggle("Get Rid Of Notifacations", true, function()
-    for _,v in pairs(game:GetService("StarterGui").MainUI.Error:GetChildren()) do 
-        if v.Name == "Err" then 
-              v:Destroy()
-        end
-    end
-end)
-
-
-
 
 --Main
 

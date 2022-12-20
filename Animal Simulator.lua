@@ -3,8 +3,6 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/WHYST
 local ui = Library:CreateWindow()
 
 local Main = ui:new("Main")
-local Egg = ui:new("Eggs")
-local tp = ui:new("Teleport")
 local Misc = ui:new("Misc")
 
 local VU = game:GetService("VirtualUser")

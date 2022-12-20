@@ -304,6 +304,21 @@ Player.Character.HumanoidRootPart.CFrame = WS.Resources.Eggs[SelectedEggs].CFram
 end)
 
 
+Egg:CreateToggle("Auto 2x Egg(Need To Beat Dungeon)", true, function()
+if SelectedEggs then
+    Player.Character.HumanoidRootPart.CFrame = WS.Resources.Eggs[SelectedEggs].CFrame
+        local ohTable1 = {
+            ["eggName"] = SelectedEggs,
+            ["baseAmount"] = 1,
+            ["auto"] = false,
+            ["amount"] = 2
+}
+    
+        RS.Packages.Knit.Services.EggService.RF.BuyEgg:InvokeServer(ohTable1)
+    end
+end)
+
+
 Egg:CreateToggle("Auto 3x Egg(Need Pass)", true, function()
 if SelectedEggs then
     Player.Character.HumanoidRootPart.CFrame = WS.Resources.Eggs[SelectedEggs].CFrame

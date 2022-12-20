@@ -1,5 +1,5 @@
-local library = loadstring(game:HttpGet("https://gitlab.com/Ner0ox/versus/-/raw/main/ui/UIV2.lua", true))()
-local ui = library:CreateWindow("Higher Jump Every Second")
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/WHYSTRIV3/DumbHub/main/V1Library.lua", true))()
+local ui = Library:CreateWindow()
 
 local Main = ui:new("Main")
 local Misc = ui:new("Misc")
@@ -11,11 +11,24 @@ local RS = game:GetService("ReplicatedStorage")
 local T = WS.Terrain
 local LI = game:GetService("Lighting")
 local Codes = {"Release", "Alien", "500Likes", "3kLikes", "BeastPet349", "BeastPet491", "BeastPet550"}
-local RebirthTable = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16","17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75"}
+local Teleports = {
+    ["Rainbow Tower"] = CFrame.new(-95.5, 1722.6228, 76.9000015, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["Candy Tower"] = CFrame.new(-263.700012, 4134.82373, 83.6999969, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["Hell Tower"] = CFrame.new(-422.800018, 7106.25244, 99.2999954, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["illumina Tower"] = CFrame.new(-597.600037, 9583.28027, 108.299988, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["Bombastic Tower"] = CFrame.new(-778.600037, 13734.0801, 121.559959, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["Christmas Tower"] = CFrame.new(-960.299988, 17769.6523, 128.555832, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["Void Tower"] = CFrame.new(-1145.80005, 21132.9043, 135.505325, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["Beach Tower"] = CFrame.new(-1326.10022, 24295.6035, 140.805328, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0),
+    ["Gold Tower"] = CFrame.new(-1516.00012, 25608.6035, 140.805328, 0, 0, 1, 0, 1, -0, -1, 0, 0) * CFrame.new(0,3,0)
+   
+}
 --Variables
 local SelectedEggs;
 local SelectedRebirth;
 local SelectedPortals;
+local SelectedTeleport;
+local TeleportWait = false
 -- Anti Afk
 
 Player.Idled:Connect(function()
@@ -33,6 +46,14 @@ end)
 
 
 
+function getTeleportNames()
+    local TeleportsTab = {}
+
+    for i,v in pairs(Teleports) do
+        table.insert(TeleportsTab, i)
+    end
+    return TeleportsTab
+end
 
 
 
@@ -41,40 +62,53 @@ end)
 
 --Main
 
-Main:CreateToggle("Auto Rainbow Tower Wins", true, function()
-	Player.Character.HumanoidRootPart.CFrame = CFrame.new(-95, 1722, 76)
+Main:CreateDropdown("Select Teleport", getTeleportNames(), function(tp)
+    SelectedTeleport = tp
+    print(SelectedTeleport)
 end)
 
-Main:CreateToggle("Auto Candy Tower Wins", true, function()
-	Player.Character.HumanoidRootPart.CFrame = CFrame.new(-263, 6144, 84)
+Main:CreateToggle("Teleport", true, function()
+	if TeleportWait == false then
+		TeleportWait = true
+    if SelectedTeleport then
+        Player.Character.HumanoidRootPart.CFrame = Teleports[SelectedTeleport]
+		task.wait(1)
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(-95.3852539, 0.75, -161.401382, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+		task.wait(1)
+		TeleportWait = false
+		end
+    end
 end)
 
-Main:CreateToggle("Auto Hell Tower Wins", true, function()
-	Player.Character.HumanoidRootPart.CFrame = CFrame.new(-422, 8561, 99)
-end)
 
-Main:CreateToggle("Auto illumina Tower Wins", true, function()
-	Player.Character.HumanoidRootPart.CFrame = CFrame.new(-597, 10940, 108)
-end)
 
-Main:CreateToggle("Auto Bombastic Tower Wins", true, function()
-	Player.Character.HumanoidRootPart.CFrame = CFrame.new(-778, 14492, 121)
-end)
 
-Main:CreateToggle("Auto Christmas Tower Wins", true, function()
-	Player.Character.HumanoidRootPart.CFrame = CFrame.new(-960, 19180, 131)
-end)
 
-Main:CreateToggle("Auto Void Tower Wins", true, function()
-	Player.Character.HumanoidRootPart.CFrame = CFrame.new(-1145, 25608, 140)
-end)
+
+
+
+
+
+
+
+
+
 
 -- Teleport
 
 
 
 
+
+
+
+
+
 -- Eggs
+
+
+
+
 
 
 
@@ -119,54 +153,10 @@ Misc:CreateButton("FPS Boost", function()
 	end
 end)
 
-local TextLabel = Instance.new("TextLabel")
-
-TextLabel.Parent = game:GetService("CoreGui")["UI V2"]
-TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.BackgroundTransparency = 1.000
-TextLabel.Position = UDim2.new(0.0745672435, 0, 0.0299251862, 0)
-TextLabel.Size = UDim2.new(0, 1216, 0, 50)
-TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "FPS: Loading"
-TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-TextLabel.TextSize = 47.000
-TextLabel.TextWrapped = true
-TextLabel.Name = "FPStext"
-TextLabel.Visible = false
-
-FPSAverage = {}
-local Ticking = false
-local LastTick = tick()
-
-local RunService = game:GetService("RunService")
-RunService:BindToRenderStep("UpdateInfo", 1000, function()
-	if Ticking == true then
-		local fps = math.floor(.5 + (1 / (tick() - LastTick)))
-		local sum = 0
-		local ave = 0
-		table.insert(FPSAverage, fps)
-		for i = 1, #FPSAverage do
-			sum = sum + FPSAverage[i]
-		end
-		game:GetService("CoreGui")["UI V2"].FPStext.Text = "FPS: " .. tostring(fps) .. " Average: " .. string.format("%.0f", (sum / #FPSAverage))
-		if (tick() - LastTick) >= 15 then
-			FPSAverage = { }
-			LastTick = tick()
-		end
-		LastTick = tick()
-	end
-end)
-
-
 Misc:CreateButton("Redeem Codes", function()
     for _,v in pairs(Codes) do
         RS.EnterCode:FireServer(v)
     end
-end)
-
-Misc:CreateButton("Show/Hide FPS Counter", function()
-	game:GetService("CoreGui")["UI V2"].FPStext.Visible = not game:GetService("CoreGui")["UI V2"].FPStext.Visible
-	Ticking = not Ticking
 end)
 
 
@@ -176,15 +166,4 @@ end)
 
 Misc:CreateButton("Copy Discord Invite", function()
     setclipboard("https://discord.gg/ups8GeuYAD")
-end)
-
-local TeleportService = game:GetService("TeleportService")
-
-Misc:CreateButton("Uninject", function()
-    game:GetService("CoreGui")["UI V2"]:Destroy()
-end)
-
-Misc:CreateButton("Uninject and Rejoin", function()
-    game:GetService("CoreGui")["UI V2"]:Destroy()
-    TeleportService:Teleport(game.PlaceId)
 end)

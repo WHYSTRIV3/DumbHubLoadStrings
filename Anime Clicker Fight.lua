@@ -161,6 +161,25 @@ Main:CreateToggle("Auto Farm Reaper", true, function()
     end
 end)
 
+
+Main:CreateToggle("Auto Farm Jojo", true, function()
+    local nearest
+    local NearestOne = 307
+    for _,v in pairs(game:GetService("Workspace")["场景"]["9"].EnemyFolder:GetChildren()) do
+        if (v.Root.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
+            nearest = v
+            NearestOne = (v.Root.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+        end
+    end
+
+    if Teleport then
+        Player.Character.HumanoidRootPart.CFrame = nearest.Root.CFrame * CFrame.new(0,2,4)
+    end
+end)
+
+
+
+
 Main:CreateButton("Teleport", function()
     Teleport = not Teleport
 end)
@@ -203,6 +222,8 @@ end)
 Egg:CreateToggle("Auto Triple Scroll", true, function()
     RS.Tool.DrawUp.Msg.DrawHero:InvokeServer(SelectedEgg, 3)
 end)
+
+
 
 
 -- Misc

@@ -16,7 +16,7 @@ local Codes = {"Release", "Alien", "500Likes", "3kLikes", "BeastPet349", "BeastP
 
 --Variables
 
-local TeleportWait = false
+local CoinWait = false
 
 
 
@@ -52,15 +52,18 @@ end)
 
 
 Main:CreateToggle("Auto Collect Coins", true, function()
-    for i, v in pairs(game:GetService("Workspace").CoinContainer:GetDescendants()) do
+if CoinWait == false then
+	CoinWait = true
+for i, v in pairs(game:GetService("Workspace").CoinContainer:GetDescendants()) do
         if v:FindFirstChild("TouchInterest") then
         firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
         firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
+		task.wait(0.5)
+		CoinWait = false
+			end
          end
      end
 end)
-
-
 
 
 

@@ -72,11 +72,19 @@ Main:CreateToggle("Auto Rainbow +2 Wins", true, function()
 	end
 end)
 
+Main:CreateToggle("Auto Candy", true, function()
+	if TeleportWait == false then
+        TeleportWait = true
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(163.606567, 10789.4248, 8015.5249, 0, 0, -1, -1, 0, 0, 0, 1, 0)
+        task.wait(2)
+		TeleportWait = false
+	end
+end)
 
 Main:CreateToggle("Auto Lava Wins", true, function()
 	if TeleportWait == false then
         TeleportWait = true
-		Player.Character.HumanoidRootPart.CFrame = CFrame.new(5417.81689, 13923.0703, 8031.875, 0, 0, -1, -1, 0, 0, 0, 1, 0)
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(313.617004, 13923.0703, 8031.875, 0, 0, -1, -1, 0, 0, 0, 1, 0)
         task.wait(2)
 		TeleportWait = false
 	end
@@ -86,7 +94,7 @@ end)
 Main:CreateToggle("Auto Moon Wins", true, function()
 	if TeleportWait == false then
         TeleportWait = true
-		Player.Character.HumanoidRootPart.CFrame = CFrame.new(8936.46191, 18409.0781, 8057.39014, 0, 0, -1, -1, 0, 0, 0, 1, 0)
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(462.061859, 18409.0781, 8056.68994, 0, 0, -1, -1, 0, 0, 0, 1, 0)
         task.wait(2)
 		TeleportWait = false
 	end
@@ -96,7 +104,7 @@ end)
 Main:CreateToggle("Auto Beach Wins", true, function()
 	if TeleportWait == false then
         TeleportWait = true
-		Player.Character.HumanoidRootPart.CFrame = CFrame.new(16379.3818, 24590.8418, 8059.0708, 0, 0, -1, -1, 0, 0, 0, 1, 0)
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(612.430664, 24590.8418, 8058.37061, -8.10623169e-05, 8.10623169e-05, -1, -1, 8.10623169e-05, 8.10623169e-05, 8.10623169e-05, 1, 8.10623169e-05)
         task.wait(2)
 		TeleportWait = false
 	end
@@ -106,7 +114,7 @@ end)
 Main:CreateToggle("Auto Christmas Wins", true, function()
 	if TeleportWait == false then
         TeleportWait = true
-		Player.Character.HumanoidRootPart.CFrame = CFrame.new(24182.5664, 41343.9336, 8088.75488, -8.10623169e-05, 8.10623169e-05, -1, -1, 8.10623169e-05, 8.10623169e-05, 8.10623169e-05, 1, 8.10623169e-05)
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(760.565247, 42507.7266, 8088.05469, -8.10623169e-05, 8.10623169e-05, -1, -1, 8.10623169e-05, 8.10623169e-05, 8.10623169e-05, 1, 8.10623169e-05)
         task.wait(2)
 		TeleportWait = false
 	end
@@ -116,12 +124,30 @@ end)
 Main:CreateToggle("Auto Void Wins", true, function()
 	if TeleportWait == false then
         TeleportWait = true
-		Player.Character.HumanoidRootPart.CFrame = CFrame.new(31492.377, 66134.1016, 8185.62549, 0, 0, -1, -1, 0, 0, 0, 1, 0)
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(913.178406, 66134.5547, 8184.97559, 0, 0, -1, -1, 0, 0, 0, 1, 0)
         task.wait(2)
 		TeleportWait = false
 	end
 end)
 
+Main:CreateToggle("Auto Gold Wins", true, function()
+	if TeleportWait == false then
+        TeleportWait = true
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(1063.37708, 92749.9141, 8266.41992, -8.10623169e-05, 8.10623169e-05, -1, -1, 8.10623169e-05, 8.10623169e-05, 8.10623169e-05, 1, 8.10623169e-05)
+        task.wait(2)
+		TeleportWait = false
+	end
+end)
+
+
+Main:CreateToggle("Auto Horror Wins", true, function()
+	if TeleportWait == false then
+        TeleportWait = true
+		Player.Character.HumanoidRootPart.CFrame = CFrame.new(1211.52075, 123459.961, 8269.77051, 0, 0, -1, -1, 0, 0, 0, 1, 0)
+        task.wait(2)
+		TeleportWait = false
+	end
+end)
 -- Teleport
 
 

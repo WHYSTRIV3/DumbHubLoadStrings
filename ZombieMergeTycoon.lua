@@ -89,6 +89,18 @@ game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServ
 game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(2, Vector3.new(-184.17544555664062, 2.296891450881958, 260.1817321777344))
 game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(4, Vector3.new(-178.60289001464844, 2.279636859893799, 267.8474426269531))
 game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(5, Vector3.new(-191.52503967285156, 2.2993853092193604, 261.00677490234375))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(6, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(7, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(8, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(9, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(10, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(11, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(12, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(13, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(14, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(15, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(16, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(17, Vector3.new(195.49609375, 2.3002991676330566, 261.8008728027344))
 end)
 
 

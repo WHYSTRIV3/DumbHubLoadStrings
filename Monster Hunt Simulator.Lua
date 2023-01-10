@@ -176,7 +176,7 @@ end)
 
 
 Main:CreateToggle("Free Coins from wheel", true, function() 
-	game:GetService("ReplicatedStorage").Player.Module.choujiang.wheel3_4:FireServer(85)
+game:GetService("ReplicatedStorage").Player.Module.choujiang.wheel3_4:FireServer(85)
 end)
 
 

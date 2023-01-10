@@ -137,6 +137,13 @@ end)
 
 --Main
 
+
+Main:CreateToggle("Every Boost", true, function() 
+	game:GetService("ReplicatedStorage").Player.Module.choujiang.wheel5_7:FireServer(610)
+end)
+
+
+
 Main:CreateToggle("Free Luck Boost", true, function() 
 	game:GetService("ReplicatedStorage").Player.Module.choujiang.wheel1_2:FireServer(27)
 end)
@@ -169,7 +176,7 @@ end)
 
 
 Main:CreateToggle("Free Coins from wheel", true, function() 
-game:GetService("ReplicatedStorage").Player.Module.choujiang.wheel3_4:FireServer(85)
+	game:GetService("ReplicatedStorage").Player.Module.choujiang.wheel3_4:FireServer(85)
 end)
 
 

@@ -1,8 +1,8 @@
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/WHYSTRIV3/DumbHub/main/V1Library.lua", true))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/WHYSTRIV3/DumbHub/main/V2%20Library.lua", true))()
 local ui = Library:CreateWindow()
 
-local Event = ui:new("Event")
+
 local Main = ui:new("Main")
 local Egg = ui:new("Eggs")
 local tp = ui:new("Teleport")
@@ -14,17 +14,15 @@ local WS = game:GetService("Workspace")
 local RS = game:GetService("ReplicatedStorage")
 local T = WS.Terrain
 local LI = game:GetService("Lighting")
-local Codes = {"Release", "Alien", "500Likes", "3kLikes", "BeastPet349", "BeastPet491", "BeastPet550"}
-local RebirthTable = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16","17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75"}
-local Potions = {"x2Clicks", "x2Gems", "x2Luck", "x2Rebirths", "x2PetXP", "x2HatchSpeed"}
-local Pass = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}
-local CUPgrades = {"ClickMultiplier", "HatchSpeed", "BankSlots", "PetEquip", "GiftMultiplier", "LuckMultiplier"}
+local Codes = {"UPDATE1"}
+local Upgrades = {"More Speed", "Jump Boost", "Extra Luck", "Extra Gems", "Pet Storage", "Pets Equipped"}
+local Rebirths = {1, 5, 10, 50, 100, 250, 500, 1000, 4200, 10000, 25000, 50000, 75000, 420000, 910000, 1200000, 10000000, 50000000, 100000000, 500000000, 750000000, 1000000000, 2500000000, 5000000000, 10000000000, 25000000000, 75000000000, 500000000000, 1000000000000}
 --Variables
-local SelectedRibirth;
-local SelectedCraftAll = "CraftAll"
-local modulescrpt;
-local selectedEggs;
-local SelectedPortals;
+local SelectedRebirths;
+local SelectedEgg;
+local EquipBestWait = false
+
+
 
 
 
@@ -43,78 +41,61 @@ end)
 
 --functions
 
+
 function getEggs()
     local Eggs = {}
 
-    for _,v in pairs(WS.Scripts.Eggs:GetChildren()) do
+    for _,v in pairs(WS.Eggs:GetChildren()) do
         table.insert(Eggs, v.Name)
     end
     return Eggs
 end
 
-function getPortals()
-    local Portals = {}
 
-    for _,v in pairs(WS.Scripts.Portals:GetChildren()) do
-            table.insert(Portals, v.Name)    
+function getRebirths()
+    local Rebirths = {}
+
+    for _,v in pairs(Player.PlayerGui.CoreUI.Frames.Rebirths.Inner:GetChildren()) do
+        if v:IsA("Frame") and v.Name == "Rebirth" then
+            table.insert(Rebirths, v.Rebirths.Value)
+        end
     end
-    return Portals
+    return Rebirths
 end
 
 
 
--- Event
-
-Event:CreateToggle("Auto Collect Presents", true, function()
-    for i, v in pairs(WS.Scripts.PresentsCollect.Storage:GetDescendants()) do
-        if v:FindFirstChild("TouchInterest") then
-        firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
-        firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
-         end
-     end
-end)
-
-Event:CreateToggle("Auto Collect Christmas Pass", true, function()
-    for _,v in pairs(Pass) do
-        RS.Functions.ChristmasPass:InvokeServer("normal", v)
-    end
-end)
 
 
-Event:CreateToggle("Auto Christmas Upgrades", true, function()
-    for _,v in pairs(CUPgrades) do
-        RS.Functions.Upgrade:InvokeServer(v, "christmas")
-    end
-end)
 
 --Main
 
 Main:CreateToggle("Auto Tap", true, function()
-    RS.Events.Click3:FireServer()
+    game:GetService("ReplicatedStorage").Events.Tap:FireServer()
 end)
 
-
-Main:CreateDropdown("Auto Rebirth Select", RebirthTable,  function(Reb)
-    SelectedRebirth = Reb
-    print(SelectedRebirth)
+Main:CreateDropdown("Select Rebirth", getRebirths(), function(Rebirths)
+    SelectedRebirths = Rebirths
+    print(SelectedRebirths)
 end)
 
 
 Main:CreateToggle("Auto Rebirth", true, function()
-    RS.Events.Rebirth:FireServer(tonumber(SelectedRebirth))
+    if SelectedRebirths then 
+        RS.Events.Rebirth:FireServer(SelectedRebirths)
+    end
 end)
 
 
 
-
-
-Main:CreateToggle("Auto Daily Spin", true, function()
-    RS.Functions.Spin:InvokeServer()
+Main:CreateToggle("Auto Buy Upgrades", true, function()
+    for _,v in pairs(Upgrades) do
+        RS.Functions.BuyUpgrade:InvokeServer(v)
+    end
 end)
-
 
 Main:CreateToggle("Auto Collect Chest", true, function()
-    for i, v in pairs(WS.Scripts.Chests:GetDescendants()) do
+    for i, v in pairs(game:GetService("Workspace").Chests:GetDescendants()) do
         if v:FindFirstChild("TouchInterest") then
         firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
         firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
@@ -123,93 +104,101 @@ Main:CreateToggle("Auto Collect Chest", true, function()
 end)
 
 
-Main:CreateToggle("Auto Potions", true, function()
-    for _,v in pairs(Potions) do
-        RS.Events.Potion:FireServer(v, 100)
-    end
+Main:CreateToggle("Auto Collect Moons/Everything", true, function()
+    for i, v in pairs(game:GetService("Workspace").CSpawn:GetDescendants()) do
+        if v:FindFirstChild("TouchInterest") then
+            firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
+            firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
+         end
+     end
 end)
 
 
-Main:CreateButton("Unlock All GamePasses", function() 
-    for _,v in pairs(Player.Passes:GetChildren()) do 
-        if v.Value == false then
-            if v.Name == "AutoChestCollect" then 
-            else
-                v.Value = true
-            end   
+Main:CreateToggle("Auto Delete Notifications", true, function()
+    for _,v in pairs(Player.PlayerGui.CoreUI.Popups:GetChildren()) do 
+        if v.Name == "Popup" then 
+              v:Destroy()
+            end
         end
-    end
+    for _,A in pairs(Player.PlayerGui.CoreUI.Popups2:GetChildren()) do 
+        if A.Name == "ClickPopup" then 
+            A:Destroy()
+        end
+    end   
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 -- Teleport
 
-tp:CreateDropdown("Worlds", getPortals(), function(Portals)
-    SelectedPortals = Portals;
-    print(SelectedPortals)
+tp:CreateButton("Teleport To Spawn", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(85.7329102, 342.923492, 53.4121399, 0.991817057, -5.61789335e-08, 0.127667248, 6.78977088e-08, 1, -8.74396093e-08, -0.127667248, 9.53924086e-08, 0.991817057)
 end)
 
-tp:CreateButton("Teleport", function()
-    if SelectedPortals then
-        local TeleportCFrame = WS.Scripts.Portals[SelectedPortals].Touch.CFrame
-        Player.Character.HumanoidRootPart.CFrame = TeleportCFrame
-    end
+tp:CreateButton("Teleport To Moon World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(2981.30762, -0.000500202179, -1026.24304)
 end)
 
+tp:CreateButton("Teleport To Ocean World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(2954.97046, 6.74036884, -1051.76465)
+end)
 
+tp:CreateButton("Teleport To Honey World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(995.559448, 346.1521, -57.2687798, -0.383630276, -1.13552074e-08, -0.923486769, 2.17496297e-08, 1, -2.13311377e-08, 0.923486769, -2.82687669e-08, -0.383630276)
+end)
 
+tp:CreateButton("Teleport To Galaxy World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(1003.48956, 346.152039, 411.438538, -0.103954911, -1.05877142e-07, -0.994581997, 5.11927496e-08, 1, -1.11804638e-07, 0.994581997, -6.25380281e-08, -0.103954911)
+end)
 
+tp:CreateButton("Teleport To Digital World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(1008.09241, 346.125244, 771.178589, -0.0698584542, 8.90183927e-08, -0.997556925, -3.45153772e-08, 1, 9.16535043e-08, 0.997556925, 4.08338252e-08, -0.0698584542)
+end)
 
+tp:CreateButton("Teleport To Pixel World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(1315.89539, 346.125275, 1198.25415, 0.0386699736, -8.33976443e-09, -0.999252021, -2.30936088e-08, 1, -9.23970411e-09, 0.999252021, 2.34336355e-08, 0.0386699736)
+end)
 
+tp:CreateButton("Teleport To Magma World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(1601.23242, 318.790955, 772.777588, 0.130073786, 1.46265844e-08, -0.991504312, -3.42349331e-08, 1, 1.02606883e-08, 0.991504312, 3.26094387e-08, 0.130073786)
+end)
 
+tp:CreateButton("Teleport To Radioactive World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(1612.04614, 318.790955, 307.835602, -0.119398236, -7.04988281e-08, -0.992846429, -3.4821952e-09, 1, -7.05880154e-08, 0.992846429, -4.97079933e-09, -0.119398236)
+end)
 
+tp:CreateButton("Teleport To Heaven World", function()
+    Player.Character.HumanoidRootPart.CFrame = CFrame.new(1697.11316, 318.790955, 37.3085365, -0.0894343704, 3.47406086e-08, -0.99599272, -1.77750925e-09, 1, 3.50399922e-08, 0.99599272, 4.90416596e-09, -0.0894343704)
+end)
 
 -- Eggs
 
-
-Egg:CreateDropdown("Select Egg",getEggs(), function(Eggs)
-    SelectedEggs = Eggs
+Egg:CreateDropdown("Select Egg", getEggs(), function(Egg)
+    SelectedEgg = Egg
+    print(SelectedEgg)
 end)
 
 Egg:CreateToggle("Auto Egg", true, function()
-    if SelectedEggs then
-        RS.Functions.Unbox:InvokeServer(SelectedEggs,'Single')
+    if SelectedEgg then
+    RS.Events.OpenEgg:FireServer(SelectedEgg, nil, nil, nil, {["1"] = false,["4"] = false,["3"] = false,["2"] = false})
     end
 end)
 
-Egg:CreateToggle("Auto Triple Egg", true, function()
-    if SelectedEggs then
-        RS.Functions.Unbox:InvokeServer(SelectedEggs,'Triple')
+Egg:CreateToggle("Auto x3 Egg", true, function()
+    if SelectedEgg then
+        RS.Events.OpenEgg:FireServer(SelectedEgg, true, nil, nil, {["1"] = false,["4"] = false,["3"] = false,["2"] = false})
     end
 end)
 
-Egg:CreateToggle("Auto Craft All", true, function()
-    local Selected = {}
-    RS.Functions.Request:InvokeServer(SelectedCraftAll,Selected)
+
+Egg:CreateToggle("Auto Equip Best", true, function()
+    if EquipBestWait == false then 
+        EquipBestWait = true
+            RS.Events.PetAction:InvokeServer("EquipBest")
+        task.wait(5)
+        EquipBestWait = false
+    end
 end)
-
-
-
-
-
---Potions
-
-
-
 
 
 
@@ -257,7 +246,7 @@ end)
 
 Misc:CreateButton("Redeem Codes", function()
     for _,v in pairs(Codes) do
-        RS.EnterCode:FireServer(v)
+        RS.Events.CodeEvent:FireServer(v)
     end
 end)
 
@@ -268,4 +257,15 @@ end)
 
 Misc:CreateButton("Copy Discord Invite", function()
     setclipboard("https://discord.gg/ups8GeuYAD")
+end)
+
+local TeleportService = game:GetService("TeleportService")
+
+Misc:CreateButton("Uninject", function()
+    game:GetService("CoreGui").DumbHubV2:Destroy()
+end)
+
+Misc:CreateButton("Uninject and Rejoin", function()
+    game:GetService("CoreGui").DumbHubV2:Destroy()
+    TeleportService:Teleport(game.PlaceId)
 end)

@@ -16,7 +16,7 @@ local RS = game:GetService("ReplicatedStorage")
 local T = WS.Terrain
 local LI = game:GetService("Lighting")
 local Codes = {"SORRYFORLASTUPDATE", "UPDATE4.5", "10KLIKES", "UPDATE4", "1MVISITS", "UPDATE3", "SORRYFORDUNGEONBUG", "UPDATE2.5", "5KLIKES", "UPDATE2", "SORRYFORSHUTDOWN", "2KLIKES", "UPDATE1", "1KLIKES", "Daetoi", "BUGFIXES"}
-local Farm = {"TeleportToSelectedMob", "AllMobs"}
+local Farm = {"TeleportToSelectedMob",  "All Mobs"}
 local Upgradess = {"Power", "Gems", "Sword", "PetsEquipped", "Sphere"}
 --Variables
 
@@ -123,12 +123,12 @@ Main:CreateToggle("Auto Farm", true, function()
                 if Teleport then
                     Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,1)
                 end
-        elseif _G.SelectedFarm == "AllMobs" then
+        elseif _G.SelectedFarm == "All Mobs" then
         
         local nearest
         local NearestOne = 1000
                 for i,v in pairs(game:GetService("Workspace").Client.Mobs:GetDescendants()) do
-                        if v:IsA("Model")  then
+                        if v:IsA("Model") and v.Parent:IsA("Folder") then
                             if (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
                             nearest = v
                             NearestOne = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
@@ -136,7 +136,7 @@ Main:CreateToggle("Auto Farm", true, function()
                     end
                 end
         if Teleport then
-            Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,1)
+            Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,5)
         end
     end
 end)
@@ -156,6 +156,15 @@ end)
 
 Main:CreateToggle("Auto Collect", true, function()
     for i, v in pairs(game:GetService("Workspace").Drops:GetDescendants()) do
+        if v:FindFirstChild("TouchInterest") then
+            firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
+            firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
+         end
+     end
+end)
+
+Main:CreateToggle("Auto Collect Spheres", true, function()
+    for i, v in pairs(game:GetService("Workspace").DragonSpheresSpawns:GetDescendants()) do
         if v:FindFirstChild("TouchInterest") then
             firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
             firetouchinterest(v, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
@@ -312,7 +321,7 @@ Egg:CreateToggle("Auto Equip Best Sword", true, function()
         }
 
             game:GetService("ReplicatedStorage").MainRemote:FireServer(unpack(args))
-        task.wait(4)
+        task.wait(5)
         SwaordWait = false
     end
 end)

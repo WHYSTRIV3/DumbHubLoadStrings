@@ -217,9 +217,7 @@ local AFk = {"Easy-F", "Medium-C", "Hard-A"}
 Dungeon:CreateDropdown("Selected AFK-Rank", AFk, function(AFk)
 	SelectedDAFks = AFk
 end)
-
 --[[
-
 Dungeon:CreateDropdown("Selected Dungeon", Dungeons, function(Dungeons)
 	SelectedDungeons = Dungeons
 end)
@@ -228,28 +226,38 @@ end)
 
 Dungeon:CreateToggle("Auto Dungeon", true, function()
 	if SelectedDungeons then
-		if Player.PlayerGui.General.Labyrinth[SelectedDungeons].Visible == false and Player.PlayerGui.General["Labyrinth_UI_Header"].Visible == false then
+		if game:GetService("Players").DumbHubOwner.PlayerGui.General.Labyrinth["E-Rank"].Visible == false then
+			wait(4)
 			Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDungeons][SelectedDungeons].CFrame
-		elseif Player.PlayerGui.General.Labyrinth[SelectedDungeons].Visible == true then
+		end
+		if game:GetService("Players").DumbHubOwner.PlayerGui.General.Labyrinth["E-Rank"].Visible == true then
+			local Button = Player.PlayerGui.General.Labyrinth[SelectedDungeons].Main["Info_Menu"].Buttons.Public
+			local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
+				for i, v in next, events do 
+				firesignal(Button[v]) 
+			end
+		end			
+	end
+end)
 
-				local Button = Player.PlayerGui.General.Labyrinth[SelectedDungeons].Main["Info_Menu"].Buttons.Public
-				local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
-					for i, v in next, events do 
-						firesignal(Button[v]) 
-				end
+
+Dungeon:CreateToggle("Auto Destroy doors", true, function()
+	for i,v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+		if v:IsA("MeshPart") and v.Name == "Door" then
+			v:Destroy()
 		end
 	end
 end)
---]]
 
+--]]
 
 
 Dungeon:CreateToggle("Auto AFK-Rank", true, function()
 	if SelectedDAFks then
-		if Player.PlayerGui.General.AFK["Easy-F"].Visible == false and Player.PlayerGui.General["AFK_UI_Header"].Visible == false then
-			Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"]["Easy-F"]["Easy-F"].CFrame
-		elseif Player.PlayerGui.General.AFK["Easy-F"].Visible == true then
-			local Button = Player.PlayerGui.General.AFK["Easy-F"].Main["Info_Menu"].Buttons.Public
+		if Player.PlayerGui.General.AFK[SelectedDAFks].Visible == false and Player.PlayerGui.General["AFK_UI_Header"].Visible == false then
+			Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDAFks][SelectedDAFks].CFrame
+		elseif Player.PlayerGui.General.AFK[SelectedDAFks].Visible == true then
+			local Button = Player.PlayerGui.General.AFK[SelectedDAFks].Main["Info_Menu"].Buttons.Public
 			local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
 				for i, v in next, events do 
 					firesignal(Button[v]) 
@@ -434,4 +442,4 @@ end)
 Misc:CreateButton("Uninject and Rejoin", function()
     game:GetService("CoreGui").FATALITY:Destroy()
     TeleportService:Teleport(game.PlaceId)
-end)
+end)local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/WHYSTRIV3/DumbHub/main/FATALITY.lua", true))()

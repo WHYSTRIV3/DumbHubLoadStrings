@@ -52,6 +52,7 @@ function getDungeons()
     return Dungeons
 end
 
+
 function getMobs()
     local Mobs = {}
 
@@ -62,6 +63,12 @@ function getMobs()
 	end
     return Mobs
 end
+
+
+
+
+
+
 
 
 function getTPs()
@@ -88,38 +95,45 @@ end
 
 --Main
 
+Main:CreateDivider("Main Stuff")
 
 Main:CreateToggle("Auto Roll", true, function()
 	game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack({[1] = {["Open_Amount"] = 1,["Action"] = "Gacha_Activate",["Name"] = "Avatars_1"}}))
 end)
 
 
-Main:CreateToggle("Auto Collect Coins", true, function()
-	for i,v in pairs(game:GetService("Workspace").Debris["Pickup_Debris_1"].Coins:GetDescendants()) do
-		if v.ClassName == "ProximityPrompt" then
-			fireproximityprompt(v,5)
-			for i,O in pairs(game:GetService("Workspace").Debris["Pickup_Debris_1"].Coins:GetDescendants()) do
-				if  O.Name == "Coin" then
-					Player.Character.HumanoidRootPart.CFrame = O.CFrame
-				end
-			end
-		end
-	end
+Main:CreateToggle("Auto Collect Coins", true, function(enabled)
+    if enabled then
+        local coins = game:GetService("Workspace").Debris["Pickup_Debris_1"].Coins:GetChildren()
+        for _, coin in ipairs(coins) do
+            local proximityPrompt = coin:FindFirstChildOfClass("ProximityPrompt")
+            if proximityPrompt then
+                fireproximityprompt(proximityPrompt)
+                local coinModel = coin:FindFirstChild("Coin")
+                if coinModel then
+                    Player.Character:MoveTo(coinModel.Position)
+                end
+            end
+        end
+    end
 end)
 
-
-Main:CreateToggle("Auto Collect Potions", true, function()
-	for i,v in pairs(game:GetService("Workspace").Debris["Pickup_Debris_1"].Potions:GetDescendants()) do
-		if v.ClassName == "ProximityPrompt" then
-			fireproximityprompt(v,5)
-			for i,O in pairs(game:GetService("Workspace").Debris["Pickup_Debris_1"].Potions:GetDescendants()) do
-				if  O.Name == "Main" then
-					Player.Character.HumanoidRootPart.CFrame = O.CFrame
-				end
-			end
-		end
-	end
+Main:CreateToggle("Auto Collect Potion", true, function(enabled)
+    if enabled then
+        local Potions = game:GetService("Workspace").Debris["Pickup_Debris_1"].Potions:GetChildren()
+        for _, Potion in ipairs(Potions) do
+            local proximityPrompt = Potion:FindFirstChildOfClass("ProximityPrompt")
+            if proximityPrompt then
+                fireproximityprompt(proximityPrompt)
+                local PotionModel = Potion:FindFirstChild("Main")
+                if PotionModel then
+                    Player.Character:MoveTo(PotionModel.Position)
+                end
+            end
+        end
+    end
 end)
+
 
 Main:CreateToggle("Auto Collect Orbs", true, function()
 	for i,v in pairs(game:GetService("Workspace").Debris["Pickup_Orbs"]:GetDescendants()) do
@@ -139,15 +153,7 @@ end)
 
 Main:CreateToggle("Auto Use Collectable Potions", true, function()
 	for i,v in pairs(Potions) do
-		local args = {
-			[1] = {
-				["Selected"] = {
-					[1] = tostring(v)
-				},
-				["Action"] = "Use",
-				["Category"] = "Resources"
-			}
-		}
+		local args = {[1] = {["Selected"] = {[1] = tostring(v)},["Action"] = "Use",["Category"] = "Resources"}}
 		game:GetService("ReplicatedStorage").Events.Inventory:FireServer(unpack(args))
 	end
 end)
@@ -155,6 +161,10 @@ end)
 --Farm 
 
 local Farms = {"TeleportToSelectedMob",  "All Mobs"}
+
+Farm:CreateDivider("Auto Farm")
+
+Farm:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use The Free Auto Click To Attack Mobs")
 
 Farm:CreateDropdown("Selected Farm", Farms, function(Farm)
 	_G.SelectedFarm = Farm
@@ -201,68 +211,146 @@ Farm:CreateToggle("Auto Farm", true, function()
 end)
 
 
-Farm:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use The Free Auto Click To Attack Mobs")
+
+
 
 
 -- Dungeon
 
 
 
-local Dungeons = {"E-Rank", "C-Rank", "A-Rank", "S-Rank"}
+local Dungeons = {"E-Rank", "C-Rank", "A-Rank", "S-Rank", "SS-Rank"}
 
 local AFk = {"Easy-F", "Medium-C", "Hard-A"}
 
 
 
-Dungeon:CreateDropdown("Selected AFK-Rank", AFk, function(AFk)
-	SelectedDAFks = AFk
+
+
+Dungeon:CreateDivider("Dungeon Farm")
+
+Dungeon:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use The Free Auto Click To Attack Mobs")
+
+
+Dungeon:CreateLabel("Meteor Timer", "Waiting For Next Meteor")
+spawn(function()
+    while task.wait() do
+		for _,v in pairs(WS["_METEORS"]:GetChildren()) do
+			Dungeon:EditLabel("Meteor Timer", "Meteor Time Left: "..WS["_METEORS"][tostring(v)]["time_remaining"].bg["_counter"].Text)
+		end
+    end
 end)
---[[
+
+
+
 Dungeon:CreateDropdown("Selected Dungeon", Dungeons, function(Dungeons)
 	SelectedDungeons = Dungeons
 end)
 
 
 
+
+
 Dungeon:CreateToggle("Auto Dungeon", true, function()
-	if SelectedDungeons then
-		if game:GetService("Players").DumbHubOwner.PlayerGui.General.Labyrinth["E-Rank"].Visible == false then
-			wait(4)
-			Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDungeons][SelectedDungeons].CFrame
-		end
-		if game:GetService("Players").DumbHubOwner.PlayerGui.General.Labyrinth["E-Rank"].Visible == true then
-			local Button = Player.PlayerGui.General.Labyrinth[SelectedDungeons].Main["Info_Menu"].Buttons.Public
-			local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
-				for i, v in next, events do 
-				firesignal(Button[v]) 
+
+    if SelectedDungeons then
+		for i,v in pairs(Player.PlayerGui.Notifications.Global:GetDescendants()) do
+			if v:IsA("TextLabel") and v.Text == "Dungeon Opened [" ..SelectedDungeons..  "] (Closing In 02m)" then
+				task.wait(2)
+           		Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDungeons][SelectedDungeons].CFrame
 			end
-		end			
-	end
-end)
-
-
-Dungeon:CreateToggle("Auto Destroy doors", true, function()
-	for i,v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
-		if v:IsA("MeshPart") and v.Name == "Door" then
-			v:Destroy()
+		end
+			if Player.PlayerGui.General.Labyrinth[SelectedDungeons].Visible == true then
+			local args = {[1] = {["Type"] = "Labyrinth",["Action"] = "Enter_Dungeon",["Name"] = tostring(SelectedDungeons)}}
+				game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack(args))
+			task.wait(2)
 		end
 	end
 end)
 
---]]
+
+
+Dungeon:CreateToggle("Auto Open Doors", true, function()
+	local nearest
+	local NearestOne = 185
+	local Enemies = Player.PlayerGui.General["Labyrinth_UI_Header"].ImageLabel.Frame.Enemies.TextLabel
+
+	if Enemies.Text == "Enemies: 0/0" or Enemies.Text == "Enemies: 0/5" or Enemies.Text == "Enemies: 0/3" or Enemies.Text == "Enemies: 0/1" then
+		for i,v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+			if v:IsA("MeshPart") and v.Name == "Door" then
+				if (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
+					nearest = v
+					NearestOne = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+					Player.Character.HumanoidRootPart.CFrame = nearest.CFrame * CFrame.new(0,0,3)
+				for i,v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+					if v.ClassName == "ProximityPrompt" then
+						fireproximityprompt(v,5)
+					end
+					end
+				end
+			end
+		end
+	end
+end)
+
+Dungeon:CreateToggle("Auto Farm Mobs", true, function()
+	local nearest
+	local NearestOne = 1000
+
+	for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+		if v:IsA("Model") and v.Parent:IsA("Folder") then
+			if (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
+			nearest = v
+			NearestOne = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+		end
+	end
+end
+
+	if Teleport then
+		Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,5)
+	end
+end)
+
+
+Dungeon:CreateToggle("Auto Farm Chest Mobs", true, function()
+	local nearest
+	local NearestOne = 175
+
+	for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+		if v:IsA("MeshPart") and v.Parent:IsA("Model") then
+			if (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
+				nearest = v
+				NearestOne = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+			end
+		end
+	end
+	if Teleport then
+		Player.Character.HumanoidRootPart.CFrame = nearest.CFrame * CFrame.new(0,0,5)
+	end
+end)
+
+
+Dungeon:CreateDivider("AFK-Rank Farm")
+
+Dungeon:CreateDropdown("Selected AFK-Rank", AFk, function(AFk)
+	SelectedDAFks = AFk
+end)
 
 
 Dungeon:CreateToggle("Auto AFK-Rank", true, function()
 	if SelectedDAFks then
 		if Player.PlayerGui.General.AFK[SelectedDAFks].Visible == false and Player.PlayerGui.General["AFK_UI_Header"].Visible == false then
 			Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDAFks][SelectedDAFks].CFrame
+
 		elseif Player.PlayerGui.General.AFK[SelectedDAFks].Visible == true then
+
 			local Button = Player.PlayerGui.General.AFK[SelectedDAFks].Main["Info_Menu"].Buttons.Public
 			local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
 				for i, v in next, events do 
 					firesignal(Button[v]) 
 				end
-				if Player.PlayerGui.General["AFK_UI_Header"].Visible == true then
+
+	if Player.PlayerGui.General["AFK_UI_Header"].Visible == true then
 		local nearest
 		local NearestOne = 200
 			for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
@@ -282,12 +370,31 @@ Dungeon:CreateToggle("Auto AFK-Rank", true, function()
 	end
 end)
 
+Dungeon:CreateToggle("Auto Farm AFK-Rank Mobs", true, function()
+
+	for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+		if v:IsA("Model") and v.Parent:IsA("Folder") then
+			if (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
+			nearest = v
+			NearestOne = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+		end
+	end
+end
+
+
+	if Teleport then
+		Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,5)
+	end
+end)
+
+
+
 
 Dungeon:CreateButton("Reset Character(Kys)", function()
 	Player.Character.Humanoid.Health = 0
 end)
 
-Dungeon:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use The Free Auto Click To Attack Mobs")
+
 
 
 --Potions
@@ -295,10 +402,11 @@ Dungeon:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use T
 
 
 
-
 --Crafts
 
-local Menus = {"Crafting_General", "Crafting_Potions", "Grimoires", "Stands_Craft", "Solo_Shop", "Jewelry_Craft", "Accessories_Craft", "Avatars_Craft", "Mentors_Craft", "Blacksmith", "Curses_Craft"}
+local Menus = {"Crafting_General", "Crafting_Potions", "Grimoires", "Stands_Craft", "Solo_Shop", "Jewelry_Craft", "Accessories_Craft", "Avatars_Craft", "Mentors_Craft", "Blacksmith", "Curses_Craft", "Avatars_Leveling"}
+
+Craft:CreateDivider("Crafting Menus")
 
 Craft:CreateDropdown("Selected Menu", Menus, function(Crafts)
 	SelectedCrafts = Crafts
@@ -316,6 +424,8 @@ end)
 
 
 -- Misc
+
+Misc:CreateDivider("Miscellaneous Stuff")
 
 
 Misc:CreateButton("FPS Boost", function()
@@ -442,4 +552,7 @@ end)
 Misc:CreateButton("Uninject and Rejoin", function()
     game:GetService("CoreGui").FATALITY:Destroy()
     TeleportService:Teleport(game.PlaceId)
-end)local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/WHYSTRIV3/DumbHub/main/FATALITY.lua", true))()
+end)
+
+
+

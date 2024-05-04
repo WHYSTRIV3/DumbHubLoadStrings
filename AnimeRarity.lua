@@ -232,23 +232,9 @@ Dungeon:CreateDivider("Dungeon Farm")
 Dungeon:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use The Free Auto Click To Attack Mobs")
 
 
-Dungeon:CreateLabel("Meteor Timer", "Waiting For Next Meteor")
-spawn(function()
-    while task.wait() do
-		for _,v in pairs(WS["_METEORS"]:GetChildren()) do
-			Dungeon:EditLabel("Meteor Timer", "Meteor Time Left: "..WS["_METEORS"][tostring(v)]["time_remaining"].bg["_counter"].Text)
-		end
-    end
-end)
-
-
-
 Dungeon:CreateDropdown("Selected Dungeon", Dungeons, function(Dungeons)
 	SelectedDungeons = Dungeons
 end)
-
-
-
 
 
 Dungeon:CreateToggle("Auto Dungeon", true, function()

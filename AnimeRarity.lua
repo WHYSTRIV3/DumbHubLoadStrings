@@ -281,7 +281,7 @@ end)
 
 Dungeon:CreateToggle("Auto Farm Mobs", true, function()
 	local nearest
-	local NearestOne = 1000
+	local NearestOne = 400
 
 	for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
 		if v:IsA("Model") and v.Parent:IsA("Folder") then

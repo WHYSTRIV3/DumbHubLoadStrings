@@ -36,7 +36,24 @@ Player.Idled:Connect(function()
 end)
 
 
+getgenv().ToggleTable = { 
+	Toggles = {
+		CollectCoins = false,
+		CollectOrbs = false,
+		CollectPotions = false,
+		IgnoreHoneyCollect = false,
+		ConvertBalloon = false,
+		FarmFuzzyBombs = false,
+		FarmBubbleBloat = false,
+		FarmBalloon = false,
+		AutoSticker = false,
+		FarmingField = false,
+		FarmFlames = false,
+		farmflower = false,
+		AutoHoneyMaskEquip = false,
 
+	}
+}
 
 
 
@@ -46,11 +63,21 @@ end)
 function getDungeons()
     local Dungeons = {}
 
-    for i,v in pairs(game:GetService("Workspace").Dungeons["Start_Labyrinth"]:GetChildren()) do
+    for i,v in pairs(Player.PlayerGui.General.Labyrinth:GetChildren()) do
         table.insert(Dungeons, v.Name)
 	end
     return Dungeons
 end
+
+function getAFK()
+    local AFK = {}
+
+    for i,v in pairs(Player.PlayerGui.General.AFK:GetChildren()) do
+        table.insert(AFK, v.Name)
+	end
+    return AFK
+end
+
 
 
 function getMobs()
@@ -63,10 +90,6 @@ function getMobs()
 	end
     return Mobs
 end
-
-
-
-
 
 
 
@@ -102,38 +125,50 @@ Main:CreateToggle("Auto Roll", true, function()
 end)
 
 
-Main:CreateToggle("Auto Collect Coins", true, function(enabled)
-    if enabled then
-        local coins = game:GetService("Workspace").Debris["Pickup_Debris_1"].Coins:GetChildren()
-        for _, coin in ipairs(coins) do
-            local proximityPrompt = coin:FindFirstChildOfClass("ProximityPrompt")
-            if proximityPrompt then
-                fireproximityprompt(proximityPrompt)
-                local coinModel = coin:FindFirstChild("Coin")
-                if coinModel then
-                    Player.Character:MoveTo(coinModel.Position)
-                end
-            end
-        end
-    end
+Main:CreateToggle("Auto Collect Coins", false, function(x)
+	Toggled = x
+	spawn(function()
+	while Toggled do
+		task.wait()
+		if Toggled then
+			local coins = game:GetService("Workspace").Debris["Pickup_Debris_1"].Coins:GetChildren()
+			for _, coin in ipairs(coins) do
+				local proximityPrompt = coin:FindFirstChildOfClass("ProximityPrompt")
+				if proximityPrompt then
+					fireproximityprompt(proximityPrompt)
+					local coinModel = coin:FindFirstChild("Coin")
+						if coinModel then
+							Player.Character:MoveTo(coinModel.Position)
+                		end
+            		end
+        		end
+    		end
+		end
+	end)
 end)
+
 
 Main:CreateToggle("Auto Collect Potion", true, function(enabled)
-    if enabled then
-        local Potions = game:GetService("Workspace").Debris["Pickup_Debris_1"].Potions:GetChildren()
-        for _, Potion in ipairs(Potions) do
-            local proximityPrompt = Potion:FindFirstChildOfClass("ProximityPrompt")
-            if proximityPrompt then
-                fireproximityprompt(proximityPrompt)
-                local PotionModel = Potion:FindFirstChild("Main")
-                if PotionModel then
-                    Player.Character:MoveTo(PotionModel.Position)
-                end
-            end
-        end
-    end
+	Toggled = x
+	spawn(function()
+	while Toggled do
+		task.wait()
+		if Toggled then
+				local Potions = game:GetService("Workspace").Debris["Pickup_Debris_1"].Potions:GetChildren()
+				for _, Potion in ipairs(Potions) do
+					local proximityPrompt = Potion:FindFirstChildOfClass("ProximityPrompt")
+					if proximityPrompt then
+						fireproximityprompt(proximityPrompt)
+						local PotionModel = Potion:FindFirstChild("Main")
+						if PotionModel then
+							Player.Character:MoveTo(PotionModel.Position)
+						end
+					end
+				end
+			end
+		end
+	end)
 end)
-
 
 Main:CreateToggle("Auto Collect Orbs", true, function()
 	for i,v in pairs(game:GetService("Workspace").Debris["Pickup_Orbs"]:GetDescendants()) do
@@ -221,7 +256,7 @@ end)
 
 local Dungeons = {"E-Rank", "C-Rank", "A-Rank", "S-Rank", "SS-Rank"}
 
-local AFk = {"Easy-F", "Medium-C", "Hard-A"}
+local AFk = {"Easy-F", "Medium-C", "Hard-A", "???-S"}
 
 
 
@@ -237,83 +272,128 @@ Dungeon:CreateDropdown("Selected Dungeon", Dungeons, function(Dungeons)
 end)
 
 
-Dungeon:CreateToggle("Auto Dungeon", true, function()
-
-    if SelectedDungeons then
-		for i,v in pairs(Player.PlayerGui.Notifications.Global:GetDescendants()) do
-			if v:IsA("TextLabel") and v.Text == "Dungeon Opened [" ..SelectedDungeons..  "] (Closing In 02m)" then
-				task.wait(2)
-           		Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDungeons][SelectedDungeons].CFrame
-			end
-		end
-			if Player.PlayerGui.General.Labyrinth[SelectedDungeons].Visible == true then
-			local args = {[1] = {["Type"] = "Labyrinth",["Action"] = "Enter_Dungeon",["Name"] = tostring(SelectedDungeons)}}
-				game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack(args))
-			task.wait(2)
-		end
-	end
-end)
-
-
-
-Dungeon:CreateToggle("Auto Open Doors", true, function()
-	local nearest
-	local NearestOne = 185
-	local Enemies = Player.PlayerGui.General["Labyrinth_UI_Header"].ImageLabel.Frame.Enemies.TextLabel
-
-	if Enemies.Text == "Enemies: 0/0" or Enemies.Text == "Enemies: 0/5" or Enemies.Text == "Enemies: 0/3" or Enemies.Text == "Enemies: 0/1" then
-		for i,v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
-			if v:IsA("MeshPart") and v.Name == "Door" then
-				if (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
-					nearest = v
-					NearestOne = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
-					Player.Character.HumanoidRootPart.CFrame = nearest.CFrame * CFrame.new(0,0,3)
-				for i,v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
-					if v.ClassName == "ProximityPrompt" then
-						fireproximityprompt(v,5)
+Dungeon:CreateToggle("Auto Join Dungeon", false, function(x)
+	Toggled = x
+		spawn(function()
+		while Toggled do
+			task.wait()
+			if Toggled then
+    			if SelectedDungeons then
+					for i,v in pairs(Player.PlayerGui.Notifications.Global:GetDescendants()) do
+						if v:IsA("TextLabel") and v.Text == "Dungeon Opened [" ..SelectedDungeons..  "] (Closing In 02m)" then
+							task.wait(2)
+							Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDungeons][SelectedDungeons].CFrame
+						end
 					end
+						if Player.PlayerGui.General.Labyrinth[SelectedDungeons].Visible == true then
+						local args = {[1] = {["Type"] = "Labyrinth",["Action"] = "Enter_Dungeon",["Name"] = tostring(SelectedDungeons)}}
+							game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack(args))
+							task.wait(2)
+						
 					end
 				end
 			end
 		end
-	end
+	end)
 end)
 
-Dungeon:CreateToggle("Auto Farm Mobs", true, function()
-	local nearest
-	local NearestOne = 400
-
-	for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-		if v:IsA("Model") and v.Parent:IsA("Folder") then
-			if (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
-			nearest = v
-			NearestOne = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
-		end
-	end
-end
-
-	if Teleport then
-		Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,5)
-	end
+local IgnoreBossRoom = false
+Dungeon:CreateToggle("Ignore Boss Room Till The End", true, function(x)
+    IgnoreBossRoom = x
 end)
 
 
-Dungeon:CreateToggle("Auto Farm Chest Mobs", true, function()
-	local nearest
-	local NearestOne = 175
+Dungeon:CreateToggle("Auto Open Doors", false, function(x)
+    local Enemies = Player.PlayerGui.General["Labyrinth_UI_Header"].ImageLabel.Frame.Enemies.TextLabel
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait()
+            if Toggled then
+                if Enemies.Text == "Enemies: 0/0" or Enemies.Text == "Enemies: 0/5" or Enemies.Text == "Enemies: 0/3" or Enemies.Text == "Enemies: 0/1" then
+                    local NearestDistance = math.huge 
+                    local NearestDoor = nil 
+                    local playerPosition = Player.Character.HumanoidRootPart.Position 
+                    
+                    for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+                        if v:IsA("MeshPart") and v.Name == "Door" then
+                            local doorPosition = v.Position
+                            local distance = (doorPosition - playerPosition).Magnitude
+                            
+                            if IgnoreBossRoom then
+                                local isBossRoom = false
+                                for _, child in pairs(v:GetChildren()) do
+                                    if child:IsA("TextLabel") and child.Text == "Boss Room" then
+                                        isBossRoom = true
+                                        break
+                                    end
+                                end
+                                if isBossRoom and Enemies.Text ~= "Enemies: 0/0" then
+                                    continue
+                                end
+                            end
 
-	for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-		if v:IsA("MeshPart") and v.Parent:IsA("Model") then
-			if (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
-				nearest = v
-				NearestOne = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
-			end
-		end
-	end
-	if Teleport then
-		Player.Character.HumanoidRootPart.CFrame = nearest.CFrame * CFrame.new(0,0,5)
-	end
+                            if distance < NearestDistance then
+                                NearestDistance = distance
+                                NearestDoor = v
+                            end
+                        end
+                    end
+                    
+                    -- Move the player to the nearest door if one was found
+                    if NearestDoor then
+                        Player.Character.HumanoidRootPart.CFrame = NearestDoor.CFrame * CFrame.new(0, -8, 3)
+                        
+                        -- Fire proximity prompts after moving to the door
+                        for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+                            if v.ClassName == "ProximityPrompt" then
+                                fireproximityprompt(v, 5)
+                            end
+                        end
+                    end
+                end
+            end
+            task.wait(1)  -- Wait for one second before the next iteration
+        end
+    end)
 end)
+
+
+local MaxFarmDistance = 240 -- Define the maximum distance for farming
+
+Dungeon:CreateToggle("Auto Farm Mobs and Chest Mobs", true, function(Toggled)
+    local nearestEntity
+    local NearestDistance = math.huge
+    if SelectedDungeons then
+        if #game:GetService("Workspace").World:GetChildren() == 2 then
+            for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                local distance
+
+                if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Parent:IsA("Folder") then
+                    distance = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+                elseif v:IsA("MeshPart") and v.Parent:IsA("Model") then
+                    distance = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+                end
+
+                if distance and distance < NearestDistance and distance <= MaxFarmDistance then
+                    nearestEntity = v
+                    NearestDistance = distance
+                end
+            end
+
+            if nearestEntity then
+                if nearestEntity:IsA("Model") then
+                    Player.Character.HumanoidRootPart.CFrame = nearestEntity.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
+                elseif nearestEntity:IsA("MeshPart") then
+                    Player.Character.HumanoidRootPart.CFrame = nearestEntity.CFrame * CFrame.new(0, 0, 5)
+                end
+            end
+        end
+    end
+end)
+
+
+
 
 
 Dungeon:CreateDivider("AFK-Rank Farm")
@@ -323,54 +403,59 @@ Dungeon:CreateDropdown("Selected AFK-Rank", AFk, function(AFk)
 end)
 
 
-Dungeon:CreateToggle("Auto AFK-Rank", true, function()
-	if SelectedDAFks then
-		if Player.PlayerGui.General.AFK[SelectedDAFks].Visible == false and Player.PlayerGui.General["AFK_UI_Header"].Visible == false then
-			Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDAFks][SelectedDAFks].CFrame
+Dungeon:CreateToggle("Auto AFK-Rank", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait()
+            if Toggled then
+                if SelectedDAFks then
+                    if game:GetService("Workspace").World:FindFirstChild("Lobby") then
+                        Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedDAFks][SelectedDAFks].CFrame
 
-		elseif Player.PlayerGui.General.AFK[SelectedDAFks].Visible == true then
-
-			local Button = Player.PlayerGui.General.AFK[SelectedDAFks].Main["Info_Menu"].Buttons.Public
-			local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
-				for i, v in next, events do 
-					firesignal(Button[v]) 
-				end
-
-	if Player.PlayerGui.General["AFK_UI_Header"].Visible == true then
-		local nearest
-		local NearestOne = 200
-			for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-					if v:IsA("Model") and v.Parent:IsA("Folder") then
-						if (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
-							nearest = v
-							NearestOne = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
-							game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack({[1] = {["Info"] = {["Id"] = v.Name},["Action"] = "Mouse_Click"}}))
-					end
-				end
-			end
-		end
-			if Teleport then
-				Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,1)
-			end
-		end
-	end
+                        local Button = Player.PlayerGui.General.AFK[SelectedDAFks].Main["Info_Menu"].Buttons.Public
+                        local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
+                        for i, v in ipairs(events) do
+                            firesignal(Button[v])
+                        end
+                    end
+                end
+            end
+            task.wait(15) -- Wait for 15 seconds before the next iteration
+        end
+    end)
 end)
 
-Dungeon:CreateToggle("Auto Farm AFK-Rank Mobs", true, function()
 
-	for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-		if v:IsA("Model") and v.Parent:IsA("Folder") then
-			if (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
-			nearest = v
-			NearestOne = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
-		end
-	end
-end
+Dungeon:CreateToggle("Auto Farm AFK Mobs", true, function(Toggled)
+    local nearestEntity
+    local NearestDistance = math.huge
+    if SelectedDungeons then
+        if #game:GetService("Workspace").World:GetChildren() == 2 then
+            for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                local distance
 
+                if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Parent:IsA("Folder") then
+                    distance = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+                elseif v:IsA("MeshPart") and v.Parent:IsA("Model") then
+                    distance = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+                end
 
-	if Teleport then
-		Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,5)
-	end
+                if distance and distance < NearestDistance and distance <= MaxFarmDistance then
+                    nearestEntity = v
+                    NearestDistance = distance
+                end
+            end
+
+            if nearestEntity then
+                if nearestEntity:IsA("Model") then
+                    Player.Character.HumanoidRootPart.CFrame = nearestEntity.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
+                elseif nearestEntity:IsA("MeshPart") then
+                    Player.Character.HumanoidRootPart.CFrame = nearestEntity.CFrame * CFrame.new(0, 0, 5)
+                end
+            end
+        end
+    end
 end)
 
 
@@ -379,6 +464,7 @@ end)
 Dungeon:CreateButton("Reset Character(Kys)", function()
 	Player.Character.Humanoid.Health = 0
 end)
+
 
 
 

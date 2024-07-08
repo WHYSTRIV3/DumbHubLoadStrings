@@ -15,7 +15,8 @@ local WS = game:GetService("Workspace")
 local RS = game:GetService("ReplicatedStorage")
 local T = WS.Terrain
 local LI = game:GetService("Lighting")
-local Codes = {"Update12", "22K5LIKES", "25KLIKES", "14KFAV", "14K5FAV", "15KFAV", "15K5FAV", "Update11P2", "13K5FAV", "4KON", "Update11", "GUILDS"}
+local Codes = {"Update12", "22K5LIKES", "25KLIKES", "14KFAV", "14K5FAV", "15KFAV", "15K5FAV", "Update11P2", "13K5FAV", "4KON", "Update11", "GUILDS", "Update22", "29K5FAV", "30KFAV", "30K5FAV", "55KLIKES", "Update21", "28KFAV", "28K5FAV", "29KFAV",
+"18M", "Update20", "50KLIKES", "26K5FAV", "27KFAV", "27K5FAV", "26KFAV", "25K5FAV"}
 
 --Variables
 local Rewards = {"1", "2", "3", "4", "5", "6", "7", "8"}
@@ -41,16 +42,7 @@ getgenv().ToggleTable = {
 		CollectCoins = false,
 		CollectOrbs = false,
 		CollectPotions = false,
-		IgnoreHoneyCollect = false,
-		ConvertBalloon = false,
-		FarmFuzzyBombs = false,
-		FarmBubbleBloat = false,
-		FarmBalloon = false,
-		AutoSticker = false,
-		FarmingField = false,
-		FarmFlames = false,
-		farmflower = false,
-		AutoHoneyMaskEquip = false,
+
 
 	}
 }
@@ -125,6 +117,15 @@ Main:CreateToggle("Auto Roll", true, function()
 end)
 
 
+Main:CreateToggle("Auto Super Roll", true, function()
+	if game:GetService("Players").WHYSTRlVE.PlayerGui.Main["Quick_Menu"]["Super_Roll"].TextLabel.Text ~= "0 Left" then
+		game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack({[1] = {["Open_Amount"] = 1,["Super_Roll"] = true,["Action"] = "Gacha_Activate",["Name"] = "Avatars_1"}}))
+	end
+end)
+
+
+
+
 Main:CreateToggle("Auto Collect Coins", false, function(x)
 	Toggled = x
 	spawn(function()
@@ -148,7 +149,7 @@ Main:CreateToggle("Auto Collect Coins", false, function(x)
 end)
 
 
-Main:CreateToggle("Auto Collect Potion", true, function(enabled)
+Main:CreateToggle("Auto Collect Potion", false, function(x)
 	Toggled = x
 	spawn(function()
 	while Toggled do
@@ -202,49 +203,56 @@ Farm:CreateDivider("Auto Farm")
 Farm:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use The Free Auto Click To Attack Mobs")
 
 Farm:CreateDropdown("Selected Farm", Farms, function(Farm)
-	_G.SelectedFarm = Farm
+    _G.SelectedFarm = Farm
 end)
 
+local Mobs = {"Dio", "Armored Titan", "Upper Sun III", "Shiza", "Denzo", "Kakoshi", "Katana Man", "Medara", "Merum", "Dark King", "Geto"}
 
-Farm:CreateDropdown("Selected Mob", getMobs(), function(Mob)
-	_G.SelectedMob = Mob
+Farm:CreateDropdown("Selected Mob", Mobs, function(Mob)
+    _G.SelectedMob = Mob
 end)
 
-
-
-Farm:CreateToggle("Auto Farm", true, function()
-    if _G.SelectedFarm == "TeleportToSelectedMob" then
-
-		local mobThing = nil
-
-            if _G.SelectedMob then
-                for _, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-					if v:IsA("Model") and WS.Debris.Monsters[tostring(v)].BillboardGui.Frame["Mob_Name"].Text == _G.SelectedMob  then
-						mobThing = v
-						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,1,2)
-					end
-				end
-			end
-		
-
-        elseif _G.SelectedFarm == "All Mobs" then
-        
-        local nearest
-        local NearestOne = 1000
-                for i,v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-                        if v:IsA("Model") and v.Parent:IsA("Folder") then
-                            if (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
-                            nearest = v
-                            NearestOne = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+Farm:CreateToggle("Auto Farm", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait()
+            if Toggled then
+                if _G.SelectedFarm == "TeleportToSelectedMob" then
+                    local mobThing = nil
+                    if _G.SelectedMob then
+                        for _, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                            if v:IsA("Model") and v:FindFirstChild("BillboardGui") and v.BillboardGui:FindFirstChild("Frame") and v.BillboardGui.Frame:FindFirstChild("Mob_Name") then
+                                if v.BillboardGui.Frame.Mob_Name.Text == _G.SelectedMob then
+                                    mobThing = v
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, -5, 2)
+                                    break
+                                end
+                            end
                         end
                     end
+                elseif _G.SelectedFarm == "All Mobs" then
+                    local nearest
+                    local NearestOne = 1000
+                    for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                        if v:IsA("Model") and v.Parent:IsA("Folder") then
+                            local distance = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                            if distance < NearestOne then
+                                nearest = v
+                                NearestOne = distance
+                            end
+                        end
+                    end
+                    if nearest then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
+                    else
+                        print("No nearest mob found") -- Debug print statement
+                    end
                 end
-        if Teleport then
-            Player.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0,0,5)
+            end
         end
-    end
+    end)
 end)
-
 
 
 
@@ -297,26 +305,29 @@ Dungeon:CreateToggle("Auto Join Dungeon", false, function(x)
 	end)
 end)
 
+
 local IgnoreBossRoom = false
 Dungeon:CreateToggle("Ignore Boss Room Till The End", true, function(x)
     IgnoreBossRoom = x
 end)
 
 
+
+
 Dungeon:CreateToggle("Auto Open Doors", false, function(x)
-    local Enemies = Player.PlayerGui.General["Labyrinth_UI_Header"].ImageLabel.Frame.Enemies.TextLabel
     Toggled = x
     spawn(function()
         while Toggled do
-            task.wait()
+            task.wait(1)  -- Wait for one second before each iteration to reduce script load
             if Toggled then
+                local Enemies = Player.PlayerGui.General["Labyrinth_UI_Header"].ImageLabel.Frame.Enemies.TextLabel
                 if Enemies.Text == "Enemies: 0/0" or Enemies.Text == "Enemies: 0/5" or Enemies.Text == "Enemies: 0/3" or Enemies.Text == "Enemies: 0/1" then
                     local NearestDistance = math.huge 
                     local NearestDoor = nil 
                     local playerPosition = Player.Character.HumanoidRootPart.Position 
                     
                     for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
-                        if v:IsA("MeshPart") and v.Name == "Door" then
+                        if v:IsA("MeshPart") and v.Name == "Door" and v.MeshId == "rbxassetid://16992775567" then
                             local doorPosition = v.Position
                             local distance = (doorPosition - playerPosition).Magnitude
                             
@@ -346,14 +357,13 @@ Dungeon:CreateToggle("Auto Open Doors", false, function(x)
                         
                         -- Fire proximity prompts after moving to the door
                         for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
-                            if v.ClassName == "ProximityPrompt" then
+                            if v:IsA("ProximityPrompt") then
                                 fireproximityprompt(v, 5)
                             end
                         end
                     end
                 end
             end
-            task.wait(1)  -- Wait for one second before the next iteration
         end
     end)
 end)
@@ -361,23 +371,27 @@ end)
 
 local MaxFarmDistance = 240 -- Define the maximum distance for farming
 
+
 Dungeon:CreateToggle("Auto Farm Mobs and Chest Mobs", true, function(Toggled)
-    local nearestEntity
-    local NearestDistance = math.huge
-    if SelectedDungeons then
-        if #game:GetService("Workspace").World:GetChildren() == 2 then
+    if Toggled then
+        local nearestEntity
+        local NearestDistance = math.huge
+
+        if SelectedDungeons then
             for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
                 local distance
 
-                if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Parent:IsA("Folder") then
-                    distance = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
-                elseif v:IsA("MeshPart") and v.Parent:IsA("Model") then
-                    distance = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
-                end
+                if not table.find(Mobs, v.Name) then
+                    if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Parent:IsA("Folder") then
+                        distance = (v.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+                    elseif v:IsA("MeshPart") and v.Parent:IsA("Model") then
+                        distance = (v.Position - Player.Character.HumanoidRootPart.Position).Magnitude
+                    end
 
-                if distance and distance < NearestDistance and distance <= MaxFarmDistance then
-                    nearestEntity = v
-                    NearestDistance = distance
+                    if distance and distance < NearestDistance and distance <= MaxFarmDistance then
+                        nearestEntity = v
+                        NearestDistance = distance
+                    end
                 end
             end
 
@@ -391,8 +405,6 @@ Dungeon:CreateToggle("Auto Farm Mobs and Chest Mobs", true, function(Toggled)
         end
     end
 end)
-
-
 
 
 
@@ -500,88 +512,6 @@ end)
 Misc:CreateDivider("Miscellaneous Stuff")
 
 
-Misc:CreateButton("FPS Boost", function()
-	local decalsyeeted = true
-	local g = game
-	T.WaterWaveSize = 0
-	T.WaterWaveSpeed = 0
-	T.WaterReflectance = 0
-	T.WaterTransparency = 0
-	LI.GlobalShadows = false
-	LI.FogEnd = 9e9
-	LI.Brightness = 0
-	settings().Rendering.QualityLevel = "Level01"
-	for _, v in pairs(g:GetDescendants()) do
-		if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
-			v.Material = "Plastic"
-			v.Reflectance = 0
-		elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
-			v.Transparency = 1
-		elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-			v.Lifetime = NumberRange.new(0)
-		elseif v:IsA("Explosion") then
-			v.BlastPressure = 1
-			v.BlastRadius = 1
-		elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
-			v.Enabled = false
-		elseif v:IsA("MeshPart") then
-			v.Material = "Plastic"
-			v.Reflectance = 0
-			v.TextureID = 10385902758728957
-		end
-	end
-	for _, e in pairs(LI:GetChildren()) do
-		if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
-			e.Enabled = false
-		end
-	end
-end)
-
-local TextLabel = Instance.new("TextLabel")
-
-TextLabel.Parent = game:GetService("CoreGui").FATALITY
-TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.BackgroundTransparency = 1.000
-TextLabel.Position = UDim2.new(0.0745672435, 0, 0.0299251862, 0)
-TextLabel.Size = UDim2.new(0, 1216, 0, 50)
-TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "FPS: Loading"
-TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-TextLabel.TextSize = 47.000
-TextLabel.TextWrapped = true
-TextLabel.Name = "FPStext"
-TextLabel.Visible = false
-
-FPSAverage = {}
-local Ticking = false
-local LastTick = tick()
-
-local RunService = game:GetService("RunService")
-RunService:BindToRenderStep("UpdateInfo", 1000, function()
-	if Ticking == true then
-		local fps = math.floor(.5 + (1 / (tick() - LastTick)))
-		local sum = 0
-		local ave = 0
-		table.insert(FPSAverage, fps)
-		for i = 1, #FPSAverage do
-			sum = sum + FPSAverage[i]
-		end
-		game:GetService("CoreGui").FATALITY.FPStext.Text = "FPS: " .. tostring(fps) .. " Average: " .. string.format("%.0f", (sum / #FPSAverage))
-		if (tick() - LastTick) >= 15 then
-			FPSAverage = { }
-			LastTick = tick()
-		end
-		LastTick = tick()
-	end
-end)
-
-
-Misc:CreateButton("Show/Hide FPS Counter", function()
-	game:GetService("CoreGui").FATALITY.FPStext.Visible = not game:GetService("CoreGui").FATALITY.FPStext.Visible
-	Ticking = not Ticking
-end)
-
-
 Misc:CreateButton("Redeem Codes", function()
     for _,v in pairs(Codes) do
 		local args = {
@@ -595,36 +525,9 @@ Misc:CreateButton("Redeem Codes", function()
 end)
 
 
-Misc:CreateSlider("WalkSpeed", {min = 16, max = 200, default = 16}, function(state)
-    Player.Character.Humanoid.WalkSpeed = state
-end)
-
-Misc:CreateButton("Copy Discord Invite", function()
-    setclipboard("https://discord.gg/ups8GeuYAD")
-end)
 
 
 
-
-local TeleportService = game:GetService("TeleportService")
-
-
-Misc:CreateButton("Refresh UI", function()
-    game:GetService("CoreGui").FATALITY:Destroy()
-	task.wait(1)
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/WHYSTRIV3/DumbHub/main/DumbHub.lua"))()
-end)
-
-
-Misc:CreateButton("Uninject", function()
-    game:GetService("CoreGui").FATALITY:Destroy()
-end)
-
-
-Misc:CreateButton("Uninject and Rejoin", function()
-    game:GetService("CoreGui").FATALITY:Destroy()
-    TeleportService:Teleport(game.PlaceId)
-end)
 
 
 

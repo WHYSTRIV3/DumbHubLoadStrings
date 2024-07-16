@@ -112,14 +112,20 @@ end
 
 Main:CreateDivider("Main Stuff")
 
-Main:CreateToggle("Auto Roll", true, function()
-	game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack({[1] = {["Open_Amount"] = 1,["Action"] = "Gacha_Activate",["Name"] = "Avatars_1"}}))
+Main:CreateSlider("Set Roll Amount", {min = 1, max = 6, default = 1}, function(state)
+	RollAmount = state
 end)
 
 
+Main:CreateToggle("Auto Roll", true, function()
+    if RollAmount then
+	    game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack({[1] = {["Open_Amount"] = RollAmount or default ,["Action"] = "Gacha_Activate",["Name"] = "Avatars_1"}}))
+    end
+end)
+
 Main:CreateToggle("Auto Super Roll", true, function()
-	if game:GetService("Players").WHYSTRlVE.PlayerGui.Main["Quick_Menu"]["Super_Roll"].TextLabel.Text ~= "0 Left" then
-		game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack({[1] = {["Open_Amount"] = 1,["Super_Roll"] = true,["Action"] = "Gacha_Activate",["Name"] = "Avatars_1"}}))
+	if Player.PlayerGui.Main["Quick_Menu"]["Super_Roll"].TextLabel.Text ~= "0 Left" then
+		game:GetService("ReplicatedStorage").Events.To_Server:FireServer(unpack({[1] = {["Open_Amount"] = RollAmount,["Super_Roll"] = true,["Action"] = "Gacha_Activate",["Name"] = "Avatars_1"}}))
 	end
 end)
 
@@ -127,49 +133,125 @@ end)
 
 
 Main:CreateToggle("Auto Collect Coins", false, function(x)
-	Toggled = x
-	spawn(function()
-	while Toggled do
-		task.wait()
-		if Toggled then
-			local coins = game:GetService("Workspace").Debris["Pickup_Debris_1"].Coins:GetChildren()
-			for _, coin in ipairs(coins) do
-				local proximityPrompt = coin:FindFirstChildOfClass("ProximityPrompt")
-				if proximityPrompt then
-					fireproximityprompt(proximityPrompt)
-					local coinModel = coin:FindFirstChild("Coin")
-						if coinModel then
-							Player.Character:MoveTo(coinModel.Position)
-                		end
-            		end
-        		end
-    		end
-		end
-	end)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            -- Short delay between loop iterations
+            task.wait(0.1)
+            
+            -- Ensure the player and HumanoidRootPart are valid
+            local player = game.Players.LocalPlayer
+            local character = player and player.Character
+            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+            
+            if humanoidRootPart then
+                -- Cache the coins
+                local coins = game:GetService("Workspace").Debris["Pickup_Debris_1"].Coins:GetChildren()
+                
+                for _, coin in pairs(coins) do
+                    if coin:IsA("Model") and coin:FindFirstChild("Coin") then
+                        -- Move to the coin
+                        humanoidRootPart.CFrame = coin.Coin.CFrame
+                        
+                        -- Look for ProximityPrompt within the coin model
+                        local proximityPrompt = coin:FindFirstChildOfClass("ProximityPrompt")
+                        if proximityPrompt then
+                            fireproximityprompt(proximityPrompt, 5)
+                            -- Short delay after collecting each coin
+                            task.wait(0.5)
+                        end
+                    end
+                end
+            end
+        end
+    end)
 end)
+
+
+
+
 
 
 Main:CreateToggle("Auto Collect Potion", false, function(x)
-	Toggled = x
-	spawn(function()
-	while Toggled do
-		task.wait()
-		if Toggled then
-				local Potions = game:GetService("Workspace").Debris["Pickup_Debris_1"].Potions:GetChildren()
-				for _, Potion in ipairs(Potions) do
-					local proximityPrompt = Potion:FindFirstChildOfClass("ProximityPrompt")
-					if proximityPrompt then
-						fireproximityprompt(proximityPrompt)
-						local PotionModel = Potion:FindFirstChild("Main")
-						if PotionModel then
-							Player.Character:MoveTo(PotionModel.Position)
-						end
-					end
-				end
-			end
-		end
-	end)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            -- Short delay between loop iterations
+            task.wait(0.2)
+            
+            -- Ensure the player and HumanoidRootPart are valid
+            local player = game.Players.LocalPlayer
+            local character = player and player.Character
+            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+            
+            if humanoidRootPart then
+                -- Cache the potions
+                local potions = game:GetService("Workspace").Debris["Pickup_Debris_1"].Potions:GetChildren()
+                
+                for _, potion in pairs(potions) do
+                    -- Move to the potion's main part
+                    local potionModel = potion:FindFirstChild("Main")
+                    if potionModel then
+                        humanoidRootPart.CFrame = potionModel.CFrame
+
+                        local proximityPrompt = potion:FindFirstChildOfClass("ProximityPrompt")
+                        if proximityPrompt then
+                            fireproximityprompt(proximityPrompt, 5)
+                            task.wait(0.5)
+                        end
+                    end
+                end
+            end
+        end
+    end)
 end)
+
+local FruitName = {"Magma Fruit", "Sand Fruit", "Rubber Fruit", "Bomb Fruit", "Rubber Fruit", "Smoke Fruit"} -- Note: "Rubber Fruit" appears twice in your list, consider removing duplicates if not intended.
+
+Main:CreateToggle("Auto Collect Devil Fruits", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            -- Short delay between loop iterations
+            task.wait(0.2)
+            
+            -- Ensure the player and HumanoidRootPart are valid
+            local player = game.Players.LocalPlayer
+            local character = player and player.Character
+            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+            
+            if humanoidRootPart then
+                -- Cache the Devil Fruits
+                local fruits = game:GetService("Workspace").Debris["Pickup_Debris_1"]["Devil_Fruits"]:GetChildren()
+                
+                for _, devil in pairs(fruits) do
+                    -- Check if the Devil Fruit's name is in FruitName list
+                    local fruitName = devil.Name
+                    if table.find(FruitName, fruitName) then
+                        -- Move to the Devil Fruit part
+                        local fruitPart = devil:FindFirstChildWhichIsA("BasePart")
+                        if fruitPart then
+                            humanoidRootPart.CFrame = fruitPart.CFrame
+
+                            -- Look for ProximityPrompt within the Devil Fruit
+                            local proximityPrompt = devil:FindFirstChildOfClass("ProximityPrompt")
+                            if proximityPrompt then
+                                -- Trigger the proximity prompt
+                                fireproximityprompt(proximityPrompt, 5)
+                                -- Short delay after interacting with each Devil Fruit
+                                task.wait(0.5)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+
+
+
 
 Main:CreateToggle("Auto Collect Orbs", true, function()
 	for i,v in pairs(game:GetService("Workspace").Debris["Pickup_Orbs"]:GetDescendants()) do

@@ -565,8 +565,193 @@ Dungeon:CreateButton("Reset Character(Kys)", function()
 end)
 
 
+Dungeon:CreateDivider("Soul Trial Farm")
 
 
+local SelectedSoulTrial;
+
+
+local SoulTrials = {"Hard_Soul_Trial", "Medium_Soul_Trial", "Easy_Soul_Trial"}
+
+
+Dungeon:CreateDropdown("Select Soul Trial", SoulTrials, function(SoulTrial)
+    SelectedSoulTrial = SoulTrial
+end)
+
+
+Dungeon:CreateToggle("Auto Join Soul Trial", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait()
+            if Toggled then
+                if SelectedSoulTrial then
+                    if game:GetService("Workspace").World:FindFirstChild("Soul_City") then
+                        Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Time_Trial"][SelectedSoulTrial][SelectedSoulTrial].CFrame
+
+                        task.wait(0.5)
+
+                        local vim = game:GetService'VirtualInputManager'
+                        local x = Player.PlayerGui.General["Time_Trial"][SelectedSoulTrial].Main["Info_Menu"].Buttons.Public
+                        vim:SendMouseButtonEvent(x.AbsolutePosition.X+x.AbsoluteSize.X/2,x.AbsolutePosition.Y+50,0,true,x,1)
+                        vim:SendMouseButtonEvent(x.AbsolutePosition.X+x.AbsoluteSize.X/2,x.AbsolutePosition.Y+50,0,false,x,1)
+                    end
+                end
+            end
+            task.wait(15) -- Wait for 15 seconds before the next iteration
+        end
+    end)
+end)
+
+
+Dungeon:CreateToggle("Farm Soul Trial Mobs", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait()
+            if Toggled then
+            local nearest;
+            local NearestOne = 100
+                for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                    if v:IsA("Model") and v.Parent:IsA("Folder") then
+                        if not game:GetService("Workspace").World:FindFirstChild("Soul_City") then
+                        local distance = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                        if distance < NearestOne then
+                            nearest = v
+                            NearestOne = distance
+                        end
+                    end
+                end
+            end
+                if nearest then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
+                end
+            end
+        end
+    end)
+end)
+
+Dungeon:CreateDivider("Las Noches Farm")
+
+
+local SelectedLasNochesTrials;
+
+
+local LasNochesTrials = {"Las_Noches-Easy", "Las_Noches-Medium", "Las_Noches-Hard", "Las_Noches-Hardcore", "Las_Noches-Insane"}
+
+
+Dungeon:CreateDropdown("Select LasNoches Trial", LasNochesTrials, function(LasNochesTrials)
+    SelectedLasNochesTrials = LasNochesTrials
+end)
+
+
+
+
+Dungeon:CreateToggle("Auto Join LasNoches Trial", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait()
+            if Toggled then
+                if SelectedLasNochesTrials then
+                    if game:GetService("Workspace").World:FindFirstChild("Hueco Mundo") then
+                        Player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Dungeons["Start_Labyrinth"][SelectedLasNochesTrials][SelectedLasNochesTrials].CFrame
+
+                        task.wait(0.5)
+
+                        local vim = game:GetService'VirtualInputManager'
+                        local x = Player.PlayerGui.General.Labyrinth[SelectedLasNochesTrials].Main["Info_Menu"].Buttons.Public
+                        vim:SendMouseButtonEvent(x.AbsolutePosition.X+x.AbsoluteSize.X/2,x.AbsolutePosition.Y+50,0,true,x,1)
+                        vim:SendMouseButtonEvent(x.AbsolutePosition.X+x.AbsoluteSize.X/2,x.AbsolutePosition.Y+50,0,false,x,1)
+                    end
+                end
+            end
+            task.wait(15) 
+        end
+    end)
+end)
+
+
+
+
+Dungeon:CreateToggle("Auto Open Doors(LasNoches Trial)", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait(1)  -- Wait for one second before each iteration to reduce script load
+            if Toggled then
+                local Enemies = Player.PlayerGui.General["Labyrinth_UI_Header"].ImageLabel.Frame.Enemies.TextLabel
+                if Enemies.Text == "Enemies: 0/0" or Enemies.Text == "Enemies: 0/5" or Enemies.Text == "Enemies: 0/3" or Enemies.Text == "Enemies: 0/1" then
+                    local NearestDistance = math.huge 
+                    local NearestDoor = nil 
+                    local playerPosition = Player.Character.HumanoidRootPart.Position 
+                    
+                    for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+                        if v:IsA("Part") and v.Name == "Door"  then
+                            local doorPosition = v.Position
+                            local distance = (doorPosition - playerPosition).Magnitude
+                            
+
+                            if distance < NearestDistance then
+                                NearestDistance = distance
+                                NearestDoor = v
+                            end
+                        end
+                    end
+                    
+                    -- Move the player to the nearest door if one was found
+                    if NearestDoor then
+                        Player.Character.HumanoidRootPart.CFrame = NearestDoor.CFrame * CFrame.new(0, -8, 3)
+                        
+                        -- Fire proximity prompts after moving to the door
+                        for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+                            if v:IsA("ProximityPrompt") then
+                                fireproximityprompt(v, 5)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+
+Dungeon:CreateButton("Test", function()
+    for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+        if v.Name == "Wall" then
+            v:Destroy()
+        end
+    end
+end)
+
+
+Dungeon:CreateToggle("Farm LasNoches Mobs", false, function(x)
+    Toggled = x
+    spawn(function()
+        while Toggled do
+            task.wait()
+            if Toggled then
+            local nearest;
+            local NearestOne = 200
+                for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                    if v:IsA("Model") and v.Parent:IsA("Folder") then
+                        if not game:GetService("Workspace").World:FindFirstChild("Hueco Mundo") then
+                        local distance = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                        if distance < NearestOne then
+                            nearest = v
+                            NearestOne = distance
+                        end
+                    end
+                end
+            end
+                if nearest then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = nearest.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
+                end
+            end
+        end
+    end)
+end)
 
 --teleport
 

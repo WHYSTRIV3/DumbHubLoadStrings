@@ -6,8 +6,8 @@ local ui = Library:CreateWindow()
 local Main = ui:new("Main")
 local Farm = ui:new("Auto Farm")
 local Dungeon = ui:new("Dungeon")
-local Craft = ui:new("Craft")
-local Misc = ui:new("Misc")
+local TP = ui:new("Teleport")
+local Misc = ui:new("Misc/Menus")
 
 local VU = game:GetService("VirtualUser")
 local Player = game:GetService("Players").LocalPlayer
@@ -28,6 +28,7 @@ local SelectedDAFks;
 local SelectedMob;
 local SelectedCrafts;
 local Potions = {"Speed_Potion_I", "Lucky_Potion_I", "Lucky_Potion_II"}
+local Mobs = {"Head Captain", "Kiri", "Merum", "Former Captain", "Geto"}
 -- Anti Afk
 
 Player.Idled:Connect(function()
@@ -206,7 +207,7 @@ Main:CreateToggle("Auto Collect Potion", false, function(x)
     end)
 end)
 
-local FruitName = {"Magma Fruit", "Sand Fruit", "Rubber Fruit", "Bomb Fruit", "Rubber Fruit", "Smoke Fruit"} -- Note: "Rubber Fruit" appears twice in your list, consider removing duplicates if not intended.
+local FruitName = {"Sand Fruit", "Rubber Fruit", "Bomb Fruit",  "Smoke Fruit", "Flame Fruit"} -- Note: "Rubber Fruit" appears twice in your list, consider removing duplicates if not intended.
 
 Main:CreateToggle("Auto Collect Devil Fruits", false, function(x)
     Toggled = x
@@ -228,6 +229,9 @@ Main:CreateToggle("Auto Collect Devil Fruits", false, function(x)
                     -- Check if the Devil Fruit's name is in FruitName list
                     local fruitName = devil.Name
                     if table.find(FruitName, fruitName) then
+                        -- Wait a moment before teleporting to the Devil Fruit
+                        task.wait(1.5)
+                        
                         -- Move to the Devil Fruit part
                         local fruitPart = devil:FindFirstChildWhichIsA("BasePart")
                         if fruitPart then
@@ -239,7 +243,7 @@ Main:CreateToggle("Auto Collect Devil Fruits", false, function(x)
                                 -- Trigger the proximity prompt
                                 fireproximityprompt(proximityPrompt, 5)
                                 -- Short delay after interacting with each Devil Fruit
-                                task.wait(0.5)
+                                task.wait(1.5)
                             end
                         end
                     end
@@ -248,6 +252,7 @@ Main:CreateToggle("Auto Collect Devil Fruits", false, function(x)
         end
     end)
 end)
+
 
 
 
@@ -563,24 +568,28 @@ end)
 
 
 
---Potions
+--teleport
 
+TP:CreateDivider("Teleport")
 
+TP:CreateButton("Teleport", function()
+    Player.PlayerGui.General.Teleport.Visible = true
+end)
 
 
 --Crafts
 
 local Menus = {"Crafting_General", "Crafting_Potions", "Grimoires", "Stands_Craft", "Solo_Shop", "Jewelry_Craft", "Accessories_Craft", "Avatars_Craft", "Mentors_Craft", "Blacksmith", "Curses_Craft", "Avatars_Leveling"}
 
-Craft:CreateDivider("Crafting Menus")
+Misc:CreateDivider("Crafting Menus")
 
-Craft:CreateDropdown("Selected Menu", Menus, function(Crafts)
+Misc:CreateDropdown("Selected Menu", Menus, function(Crafts)
 	SelectedCrafts = Crafts
 end) 
 
 
 
-Craft:CreateButton("Open Crafting Menu", function()
+Misc:CreateButton("Open Crafting Menu", function()
 	if SelectedCrafts then
 		Player.PlayerGui.Crafting[SelectedCrafts].Visible = true
 else

@@ -310,22 +310,21 @@ end)
 --Farm 
 
 local Farms = {"Farm Selected Mob",  "All Mobs"}
+local SelectedFarm;
+local SelectedMobs = {} -- Ensure this is declared outside the function
 
 Farm:CreateDivider("Auto Farm")
 
 Farm:CreateLabel("Gotta Use The Free Auto Click To Attack Mobs", "Gotta Use The Free Auto Click To Attack Mobs")
 
 Farm:CreateDropdown("Selected Farm", Farms, function(Farm)
-    _G.SelectedFarm = Farm
+    SelectedFarm = Farm
 end)
-
 
 local Mobs = {"Head Captain", "Kiri", "Merum", "Former Captain", "Geto", "Armored Titan", "Shiza", "Upper Sun III", "Dio", "Geto", "Kakoshi", "Katana Man", "Medara", "Merum", "Dark King", "Denzo"}
 
-_G.SelectedMobs = {}
-
 Farm:CreateMultiDropdown("Selected Mob", Mobs, function(Mob)
-    _G.SelectedMobs = Mob
+    SelectedMobs = Mob
 end)
 
 Farm:CreateToggle("Auto Farm", false, function(x)
@@ -334,9 +333,9 @@ Farm:CreateToggle("Auto Farm", false, function(x)
         while Toggled do
             task.wait()
             if Toggled then
-                if _G.SelectedFarm == "Farm Selected Mob" then
-                    if #_G.SelectedMobs > 0 then
-                        for _, mobName in pairs(_G.SelectedMobs) do
+                if SelectedFarm == "Farm Selected Mob" then
+                    if #SelectedMobs > 0 then
+                        for _, mobName in pairs(SelectedMobs) do
                             for _, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
                                 if v:IsA("Model") and v:FindFirstChild("BillboardGui") and v.BillboardGui:FindFirstChild("Frame") and v.BillboardGui.Frame:FindFirstChild("Mob_Name") then
                                     if v.BillboardGui.Frame.Mob_Name.Text == mobName and v:FindFirstChild("HumanoidRootPart") then
@@ -347,7 +346,7 @@ Farm:CreateToggle("Auto Farm", false, function(x)
                             end
                         end
                     end
-                elseif _G.SelectedFarm == "All Mobs" then
+                elseif SelectedFarm == "All Mobs" then
                     local nearest
                     local NearestOne = 1000
                     for _, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
@@ -369,7 +368,6 @@ Farm:CreateToggle("Auto Farm", false, function(x)
         end
     end)
 end)
-
 
 
 

@@ -28,7 +28,7 @@ local SelectedDAFks;
 local SelectedMob;
 local SelectedCrafts;
 local Potions = {"Speed_Potion_I", "Lucky_Potion_I", "Lucky_Potion_II"}
-local Mobs = {"Head Captain", "Kiri", "Merum", "Former Captain", "Geto"}
+
 -- Anti Afk
 
 Player.Idled:Connect(function()
@@ -38,15 +38,6 @@ Player.Idled:Connect(function()
 end)
 
 
-getgenv().ToggleTable = { 
-	Toggles = {
-		CollectCoins = false,
-		CollectOrbs = false,
-		CollectPotions = false,
-
-
-	}
-}
 
 
 
@@ -273,6 +264,41 @@ end)
 
 
 
+Main:CreateToggle("Auto Claim Chest", true, function(toggled)
+    if toggled then
+        spawn(function()
+            while toggled do
+                task.wait(1) -- Adjust the delay as necessary
+
+                if WS.Chest.Daily.Chest.TimeBoard.TextLabel.Text == "Ready" then
+                    game:GetService("ReplicatedStorage").Events.To_Server:FireServer({
+                        ["Action"] = "Chest_Claim",
+                        ["Name"] = "Daily"
+                    })
+                end
+                if WS.Chest.Daily.Group.TimeBoard.TextLabel.Text == "Ready" then
+                    game:GetService("ReplicatedStorage").Events.To_Server:FireServer({
+                        ["Action"] = "Chest_Claim",
+                        ["Name"] = "Group"
+                    })
+                end
+                if WS.Chest.Daily.Vip.TimeBoard.TextLabel.Text == "Ready" then
+                    game:GetService("ReplicatedStorage").Events.To_Server:FireServer({
+                        ["Action"] = "Chest_Claim",
+                        ["Name"] = "Vip"
+                    })
+                end
+            end
+        end)
+    end
+end)
+
+
+
+
+
+
+
 
 Main:CreateToggle("Auto Use Collectable Potions", true, function()
 	for i,v in pairs(Potions) do
@@ -283,7 +309,7 @@ end)
 
 --Farm 
 
-local Farms = {"TeleportToSelectedMob",  "All Mobs"}
+local Farms = {"Farm Selected Mob",  "All Mobs"}
 
 Farm:CreateDivider("Auto Farm")
 
@@ -293,10 +319,13 @@ Farm:CreateDropdown("Selected Farm", Farms, function(Farm)
     _G.SelectedFarm = Farm
 end)
 
-local Mobs = {"Dio", "Armored Titan", "Upper Sun III", "Shiza", "Denzo", "Kakoshi", "Katana Man", "Medara", "Merum", "Dark King", "Geto"}
 
-Farm:CreateDropdown("Selected Mob", Mobs, function(Mob)
-    _G.SelectedMob = Mob
+local Mobs = {"Head Captain", "Kiri", "Merum", "Former Captain", "Geto", "Armored Titan", "Shiza", "Upper Sun III", "Dio", "Geto", "Kakoshi", "Katana Man", "Medara", "Merum", "Dark King", "Denzo"}
+
+_G.SelectedMobs = {}
+
+Farm:CreateMultiDropdown("Selected Mob", Mobs, function(Mob)
+    _G.SelectedMobs = Mob
 end)
 
 Farm:CreateToggle("Auto Farm", false, function(x)
@@ -305,15 +334,15 @@ Farm:CreateToggle("Auto Farm", false, function(x)
         while Toggled do
             task.wait()
             if Toggled then
-                if _G.SelectedFarm == "TeleportToSelectedMob" then
-                    local mobThing = nil
-                    if _G.SelectedMob then
-                        for _, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-                            if v:IsA("Model") and v:FindFirstChild("BillboardGui") and v.BillboardGui:FindFirstChild("Frame") and v.BillboardGui.Frame:FindFirstChild("Mob_Name") then
-                                if v.BillboardGui.Frame.Mob_Name.Text == _G.SelectedMob then
-                                    mobThing = v
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, -5, 2)
-                                    break
+                if _G.SelectedFarm == "Farm Selected Mob" then
+                    if #_G.SelectedMobs > 0 then
+                        for _, mobName in pairs(_G.SelectedMobs) do
+                            for _, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                                if v:IsA("Model") and v:FindFirstChild("BillboardGui") and v.BillboardGui:FindFirstChild("Frame") and v.BillboardGui.Frame:FindFirstChild("Mob_Name") then
+                                    if v.BillboardGui.Frame.Mob_Name.Text == mobName and v:FindFirstChild("HumanoidRootPart") then
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, -5, 2)
+                                        break
+                                    end
                                 end
                             end
                         end
@@ -321,8 +350,8 @@ Farm:CreateToggle("Auto Farm", false, function(x)
                 elseif _G.SelectedFarm == "All Mobs" then
                     local nearest
                     local NearestOne = 1000
-                    for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
-                        if v:IsA("Model") and v.Parent:IsA("Folder") then
+                    for _, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
+                        if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") then
                             local distance = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
                             if distance < NearestOne then
                                 nearest = v
@@ -340,6 +369,7 @@ Farm:CreateToggle("Auto Farm", false, function(x)
         end
     end)
 end)
+
 
 
 
@@ -631,6 +661,8 @@ Dungeon:CreateToggle("Farm Soul Trial Mobs", false, function(x)
     end)
 end)
 
+
+--[[
 Dungeon:CreateDivider("Las Noches Farm")
 
 
@@ -752,7 +784,7 @@ Dungeon:CreateToggle("Farm LasNoches Mobs", false, function(x)
         end
     end)
 end)
-
+--]]
 --teleport
 
 TP:CreateDivider("Teleport")

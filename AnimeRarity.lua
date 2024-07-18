@@ -220,15 +220,14 @@ Main:CreateToggle("Auto Collect Devil Fruits", false, function(x)
                     -- Check if the Devil Fruit's name is in FruitName list
                     local fruitName = devil.Name
                     if table.find(FruitName, fruitName) then
-                        -- Wait a moment before teleporting to the Devil Fruit
-                        task.wait(1.5)
-                        
-                        -- Move to the Devil Fruit part
+ 
+
                         local fruitPart = devil:FindFirstChildWhichIsA("BasePart")
                         if fruitPart then
                             humanoidRootPart.CFrame = fruitPart.CFrame
-
-                            -- Look for ProximityPrompt within the Devil Fruit
+									
+                        task.wait(1.5)
+									
                             local proximityPrompt = devil:FindFirstChildOfClass("ProximityPrompt")
                             if proximityPrompt then
                                 -- Trigger the proximity prompt

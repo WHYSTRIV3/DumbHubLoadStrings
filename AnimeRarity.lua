@@ -204,30 +204,29 @@ Main:CreateToggle("Auto Collect Devil Fruits", false, function(x)
     Toggled = x
     spawn(function()
         while Toggled do
-            -- Short delay between loop iterations
+
             task.wait(0.2)
             
-            -- Ensure the player and HumanoidRootPart are valid
             local player = game.Players.LocalPlayer
             local character = player and player.Character
             local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
             
             if humanoidRootPart then
-                -- Cache the Devil Fruits
                 local fruits = game:GetService("Workspace").Debris["Pickup_Debris_1"]["Devil_Fruits"]:GetChildren()
                 
                 for _, devil in pairs(fruits) do
                     -- Check if the Devil Fruit's name is in FruitName list
                     local fruitName = devil.Name
                     if table.find(FruitName, fruitName) then
- 
+                        -- Wait a moment before teleporting to the Devil Fruit
 
+                        
+                        -- Move to the Devil Fruit part
                         local fruitPart = devil:FindFirstChildWhichIsA("BasePart")
                         if fruitPart then
                             humanoidRootPart.CFrame = fruitPart.CFrame
-									
-                        task.wait(1.5)
-									
+
+                            task.wait(1.5)
                             local proximityPrompt = devil:FindFirstChildOfClass("ProximityPrompt")
                             if proximityPrompt then
                                 -- Trigger the proximity prompt
@@ -492,6 +491,7 @@ Dungeon:CreateToggle("Auto Farm Mobs and Chest Mobs", true, function(Toggled)
         local NearestDistance = math.huge
 
         if SelectedDungeons then
+
             for i, v in pairs(game:GetService("Workspace").Debris.Monsters:GetDescendants()) do
                 local distance
 
@@ -508,6 +508,7 @@ Dungeon:CreateToggle("Auto Farm Mobs and Chest Mobs", true, function(Toggled)
                     end
                 end
             end
+       
 
             if nearestEntity then
                 if nearestEntity:IsA("Model") then
@@ -521,7 +522,7 @@ Dungeon:CreateToggle("Auto Farm Mobs and Chest Mobs", true, function(Toggled)
 end)
 
 
-
+--[[
 Dungeon:CreateDivider("AFK-Rank Farm")
 
 Dungeon:CreateDropdown("Selected AFK-Rank", AFk, function(AFk)
@@ -585,12 +586,14 @@ Dungeon:CreateToggle("Auto Farm AFK Mobs", true, function(Toggled)
 end)
 
 
-
-
-Dungeon:CreateButton("Reset Character(Kys)", function()
-	Player.Character.Humanoid.Health = 0
+Dungeon:CreateButton("Test", function()
+    for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+        if v.Name == "Wall" then
+            v:Destroy()
+        end
+    end
 end)
-
+--]]
 
 Dungeon:CreateDivider("Soul Trial Farm")
 
@@ -659,7 +662,7 @@ Dungeon:CreateToggle("Farm Soul Trial Mobs", false, function(x)
 end)
 
 
---[[
+
 Dungeon:CreateDivider("Las Noches Farm")
 
 
@@ -715,22 +718,36 @@ Dungeon:CreateToggle("Auto Open Doors(LasNoches Trial)", false, function(x)
                     local NearestDoor = nil 
                     local playerPosition = Player.Character.HumanoidRootPart.Position 
                     
-                    for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
-                        if v:IsA("Part") and v.Name == "Door"  then
-                            local doorPosition = v.Position
-                            local distance = (doorPosition - playerPosition).Magnitude
-                            
+                    for _, model in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
+                        if model:IsA("Model") then
+                            local doorPart = nil
+                            local partCount = 0
 
-                            if distance < NearestDistance then
-                                NearestDistance = distance
-                                NearestDoor = v
+                            for _, part in pairs(model:GetChildren()) do
+                                if part:IsA("Part") then
+                                    partCount = partCount + 1
+                                    if part.Name == "Door" then
+                                        doorPart = part
+                                    end
+                                end
+                            end
+
+                            if partCount == 1 and doorPart then
+                                local doorPosition = doorPart.Position
+                                local distance = (doorPosition - playerPosition).Magnitude
+                                
+                                if distance < NearestDistance then
+                                    NearestDistance = distance
+                                    NearestDoor = doorPart
+                                end
                             end
                         end
                     end
                     
                     -- Move the player to the nearest door if one was found
                     if NearestDoor then
-                        Player.Character.HumanoidRootPart.CFrame = NearestDoor.CFrame * CFrame.new(0, -8, 3)
+                        local rotationAngle = math.rad(-90) -- 90 degrees in radians
+                        Player.Character.HumanoidRootPart.CFrame = NearestDoor.CFrame * CFrame.new(-5, 0, -1) * CFrame.Angles(0, rotationAngle, 0)
                         
                         -- Fire proximity prompts after moving to the door
                         for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
@@ -746,13 +763,6 @@ Dungeon:CreateToggle("Auto Open Doors(LasNoches Trial)", false, function(x)
 end)
 
 
-Dungeon:CreateButton("Test", function()
-    for _, v in pairs(game:GetService("Workspace").Dungeons.Labyrinth:GetDescendants()) do
-        if v.Name == "Wall" then
-            v:Destroy()
-        end
-    end
-end)
 
 
 Dungeon:CreateToggle("Farm LasNoches Mobs", false, function(x)
@@ -781,7 +791,12 @@ Dungeon:CreateToggle("Farm LasNoches Mobs", false, function(x)
         end
     end)
 end)
---]]
+
+Dungeon:CreateButton("Reset Character(Kys)", function()
+	Player.Character.Humanoid.Health = 0
+end)
+
+
 --teleport
 
 TP:CreateDivider("Teleport")
